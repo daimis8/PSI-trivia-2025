@@ -16,3 +16,14 @@ For basic running:
 ```bash
 dotnet run
 ```
+
+
+## Frontend
+
+Vite, React, TailwindCSS, ShadCN, TanStack Router & Query, TS
+
+(please use pnpm to avoid conflicting package managers)
+
+```bash
+pnpm dev
+```
