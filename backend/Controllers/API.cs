@@ -33,10 +33,10 @@ public class APIController : ControllerBase
     [HttpPost("users")]
     public async Task<IActionResult> CreateUser([FromBody] User user)
     {
-        var existingUser = await _userService.GetUserByUsernameAsync(user.Username);
+        var existingUser = await _userService.GetUserByEmailAsync(user.Email);
         if (existingUser != null)
         {
-            return BadRequest(new { message = "Username already exists" });
+            return BadRequest(new { message = "Email already exists" });
         }
 
         var existingEmail = await _userService.GetUserByEmailAsync(user.Email);

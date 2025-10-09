@@ -43,13 +43,6 @@ public class UserService
         return user;
     }
 
-    // Get user by username
-    public async Task<User?> GetUserByUsernameAsync(string username)
-    {
-        var users = await GetAllUsersAsync();
-        return users.FirstOrDefault(u => u.Username == username);
-    }
-
     // Get user by email
     public async Task<User?> GetUserByEmailAsync(string email)
     {
@@ -65,11 +58,11 @@ public class UserService
     }
 
     // Validate user login
-    public async Task<User?> ValidateLoginAsync(string username, string password)
+    public async Task<User?> ValidateLoginAsync(string email, string password)
     {
         var users = await GetAllUsersAsync();
         return users.FirstOrDefault(u =>
-            u.Username == username && u.Password == password);
+            u.Email == email && u.Password == password);
     }
 
     // Check if file exists
