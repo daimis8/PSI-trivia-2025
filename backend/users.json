@@ -1,8 +1,22 @@
 [
   {
     "Id": 1,
-    "Username": "daimis",
     "Email": "daimonas.jocys@gmail.com",
+    "Password": "123123123"
+  },
+  {
+    "Id": 2,
+    "Email": "da@gmail.com",
+    "Password": "123123123"
+  },
+  {
+    "Id": 3,
+    "Email": "daimonas@jwqqk.com",
+    "Password": "123123123"
+  },
+  {
+    "Id": 4,
+    "Email": "dnmqwiq@gmail.com",
     "Password": "123123123"
   }
 ]
