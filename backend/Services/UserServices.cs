@@ -43,6 +43,13 @@ public class UserService
         return user;
     }
 
+    // Get user by id
+    public async Task<User?> GetUserByIdAsync(int id)
+    {
+        var users = await GetAllUsersAsync();
+        return users.FirstOrDefault(u => u.Id == id);
+    }
+
     // Get user by email
     public async Task<User?> GetUserByEmailAsync(string email)
     {
@@ -63,6 +70,22 @@ public class UserService
         var users = await GetAllUsersAsync();
         return users.FirstOrDefault(u =>
             u.Email == email && u.Password == password);
+    }
+
+    // Delete user by id
+    public async Task<bool> DeleteUserAsync(int id)
+    {
+    var users = await GetAllUsersAsync();
+    var user = users.FirstOrDefault(u => u.Id == id);
+    
+    if (user == null)
+    {
+        return false;
+    }
+    
+    users.Remove(user);
+    await SaveUsersAsync(users);
+    return true;
     }
 
     // Check if file exists

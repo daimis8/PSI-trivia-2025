@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.Models;
 using System.Text.RegularExpressions;
-
+using backend.DTOs;
 namespace backend.Controllers;
 
 [ApiController]
@@ -57,5 +57,42 @@ public class APIController : ControllerBase
 
         var newUser = await _userService.AddUserAsync(user);
         return CreatedAtAction(nameof(GetUsers), new { id = newUser.Id }, newUser);
+    }
+
+    //login endpoint
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    {
+        if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+        {
+            return BadRequest(new { message = "Email and password are required" });
+        }
+
+        var user = await _userService.ValidateLoginAsync(request.Email, request.Password);
+        
+        if (user == null)
+        {
+            return Unauthorized(new { message = "Invalid email or password" });
+        }
+        
+        return Ok(new 
+        { 
+            id = user.Id,
+            email = user.Email,
+            message = "Login successful"
+        });
+    }
+
+    [HttpDelete("users/{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var deleted = await _userService.DeleteUserAsync(id);
+        
+        if (!deleted)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+        
+        return Ok(new { message = "User deleted successfully" });
     }
 }
