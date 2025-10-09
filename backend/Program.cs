@@ -1,3 +1,5 @@
+using backend.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
@@ -15,6 +17,8 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod();
         });
 });
+
+builder.Services.AddSingleton<UserService>();
 
 var app = builder.Build();
 
