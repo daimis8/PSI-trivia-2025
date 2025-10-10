@@ -1,9 +1,9 @@
-import { ButtonRegisterLogin } from "@/components/ui/ButtonRegisterLogin";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { AuthForm } from "@/components/ui/AuthForm";
-import { FormInput } from "@/components/ui/FormInput";
+import { AuthForm } from "@/components/AuthForm";
+import { FormInput } from "@/components/FormInput";
 import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
 
 export const Route = createFileRoute("/register")({
   component: Register,
@@ -15,10 +15,17 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const { isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      navigate({ to: "/" });
+    }
+  }, [isAuthenticated, isLoading]);
 
   const registerMutation = useMutation({
     mutationFn: async (userData: { email: string; password: string }) => {
-      const response = await fetch("http://localhost:5203/api/users", {
+      const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -32,7 +39,7 @@ function Register() {
       return response.json();
     },
     onSuccess: () => {
-      navigate({ to: "/" });
+      navigate({ to: "/login" });
     },
     onError: (error: Error) => {
       setError(error.message);
@@ -50,6 +57,18 @@ function Register() {
 
     registerMutation.mutate({ email, password });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return null;
+  }
 
   return (
     <AuthForm title="Register" error={error} onSubmit={handleSubmit}>
@@ -71,13 +90,13 @@ function Register() {
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
-      <ButtonRegisterLogin
+      <button
         type="submit"
         className="border-2 border-black bg-amber-500 rounded-sm"
         disabled={registerMutation.isPending}
       >
         {registerMutation.isPending ? "Registering..." : "Register"}
-      </ButtonRegisterLogin>
+      </button>
     </AuthForm>
   );
 }

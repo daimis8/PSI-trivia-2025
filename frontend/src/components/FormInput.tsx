@@ -12,7 +12,6 @@ export function FormInput({
   type,
   value,
   onChange,
-  required = false,
   placeholder,
 }: FormInputProps) {
   return (
@@ -22,7 +21,6 @@ export function FormInput({
         type={type}
         value={value}
         onChange={onChange}
-        required={required}
         placeholder={placeholder}
         className="rounded border px-3 py-2 focus:border-blue-500 focus:outline-none"
       />

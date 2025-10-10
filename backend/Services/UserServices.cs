@@ -1,93 +1,73 @@
-using System.Text.Json;
 using backend.Models;
 
 namespace backend.Services;
 
 public class UserService
 {
-    private readonly string _filePath;
-    private readonly JsonSerializerOptions _jsonOptions;
+    private readonly DataStorage<User> _storage;
+    private readonly PasswordService _passwordService;
 
-    public UserService()
+    public UserService(PasswordService passwordService)
     {
-        _filePath = Path.Combine(Directory.GetCurrentDirectory(), "users.json");
-        _jsonOptions = new JsonSerializerOptions
-        {
-            WriteIndented = true
-        };
+        _storage = new DataStorage<User>("users.json");
+        _passwordService = passwordService;
     }
 
     // Get all users
-    public async Task<List<User>> GetAllUsersAsync()
+    public Task<List<User>> GetAllUsersAsync()
     {
-        if (!File.Exists(_filePath))
-        {
-            return new List<User>();
-        }
-
-        var json = await File.ReadAllTextAsync(_filePath);
-        return JsonSerializer.Deserialize<List<User>>(json, _jsonOptions) ?? new List<User>();
+        return Task.FromResult(_storage.GetAll().ToList());
     }
 
     // Add a new user
     public async Task<User> AddUserAsync(User user)
     {
-        var users = await GetAllUsersAsync();
-
-        // Auto-increment ID
+        var users = _storage.GetAll().ToList();
+        
         user.Id = users.Any() ? users.Max(u => u.Id) + 1 : 1;
-
-        users.Add(user);
-        await SaveUsersAsync(users);
-
+        
+        await _storage.SetAsync(user.Email, user);
+        
         return user;
     }
 
-    // Get user by id
-    public async Task<User?> GetUserByIdAsync(int id)
-    {
-        var users = await GetAllUsersAsync();
-        return users.FirstOrDefault(u => u.Id == id);
-    }
-
     // Get user by email
-    public async Task<User?> GetUserByEmailAsync(string email)
+    public Task<User?> GetUserByEmailAsync(string email)
     {
-        var users = await GetAllUsersAsync();
-        return users.FirstOrDefault(u => u.Email == email);
+        var user = _storage.Get(email);
+        return Task.FromResult(user);
     }
 
-    // Save users to file
-    private async Task SaveUsersAsync(List<User> users)
+    // Get user by ID
+    public Task<User?> GetUserByIdAsync(int id)
     {
-        var json = JsonSerializer.Serialize(users, _jsonOptions);
-        await File.WriteAllTextAsync(_filePath, json);
+        var user = _storage.GetAll().FirstOrDefault(u => u.Id == id);
+        return Task.FromResult(user);
+    }
+
+    // Delete user by ID
+    public async Task<bool> DeleteUserAsync(int id)
+    {
+        var user = _storage.GetAll().FirstOrDefault(u => u.Id == id);
+        if (user != null)
+        {
+            return await _storage.RemoveAsync(user.Email);
+        }
+        return false;
     }
 
     // Validate user login
-    public async Task<User?> ValidateLoginAsync(string email, string password)
+    public Task<User?> ValidateLoginAsync(string email, string password)
     {
-        var users = await GetAllUsersAsync();
-        return users.FirstOrDefault(u =>
-            u.Email == email && u.Password == password);
+        var user = _storage.Get(email);
+        
+        if (user == null)
+        {
+            return Task.FromResult<User?>(null);
+        }
+        
+        bool isPasswordValid = _passwordService.VerifyPassword(password, user.Password);
+        
+        return Task.FromResult(isPasswordValid ? user : null);
     }
-
-    // Delete user by id
-    public async Task<bool> DeleteUserAsync(int id)
-    {
-    var users = await GetAllUsersAsync();
-    var user = users.FirstOrDefault(u => u.Id == id);
-    
-    if (user == null)
-    {
-        return false;
-    }
-    
-    users.Remove(user);
-    await SaveUsersAsync(users);
-    return true;
-    }
-
-    // Check if file exists
-    public bool FileExists() => File.Exists(_filePath);
 }
