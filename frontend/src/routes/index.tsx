@@ -1,40 +1,35 @@
-import { Button } from '@/components/ui/button'
-import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+import { useAuth } from "@/context/AuthContext";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
-export const Route = createFileRoute('/')({
-    component: Index,
-})
+export const Route = createFileRoute("/")({
+  component: Index,
+});
 
 function Index() {
-    const { data, error, isFetching, refetch } = useQuery({
-        queryKey: ['backend-hello'],
-        enabled: false,
-        retry: false,
-        queryFn: async () => {
-            const response = await fetch('/api')
-            if (!response.ok) {
-                throw new Error(`Request failed with status ${response.status}`)
-            }
-            return response.text()
-        },
-    })
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate({ to: "/login" });
+    }
+  }, [isAuthenticated, isLoading]);
+
+  if (isLoading) {
     return (
-        <div className="p-2">
-            <h3>Welcome Home!</h3>
-            <div className="flex items-center gap-2">
-                <Button onClick={() => void refetch()}>Click me</Button>
-                {isFetching ? (
-                    <span className="text-sm text-gray-500">Loading...</span>
-                ) : null}
-            </div>
-            {error ? (
-                <div className="mt-2 text-red-600">
-                    {error instanceof Error ? error.message : String(error)}
-                </div>
-            ) : null}
-            {data ? <div className="mt-2">Response: {data}</div> : null}
-        </div>
-    )
+      <div className="flex min-h-screen items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return null;
+  }
+  return (
+    <div className="flex flex-col justify-center items-center">
+      <h3>Welcome!</h3>
+      <p>Hey, {user?.email}</p>
+    </div>
+  );
 }
