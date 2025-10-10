@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { data, isLoading, refetch } = useQuery<AuthResponse>({
     queryKey: ["auth"],
     queryFn: async () => {
-      const response = await fetch("http://localhost:5203/api/authorized", {
+      const response = await fetch("/api/authorized", {
         credentials: "include",
       });
 
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:5203/api/logout", {
+      await fetch("/api/logout", {
         method: "POST",
         credentials: "include",
       });
