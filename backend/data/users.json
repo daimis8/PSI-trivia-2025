@@ -3,5 +3,10 @@
     "Id": 1,
     "Email": "d@gmail.com",
     "Password": "$2a$11$ddMN4SgH6i8XefDo0K6/WuCgKAdqKetGUu0qgEXIzjqB7K2pO5yZC"
+  },
+  "da@gmail.com": {
+    "Id": 2,
+    "Email": "da@gmail.com",
+    "Password": "$2a$11$r7RpT7s4wMgMw34vaZmwa.lXzyeIOwqcdF41G7ThDmdzQEKCXBFpS"
   }
 }
