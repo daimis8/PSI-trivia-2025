@@ -28,6 +28,8 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
   const { isAuthenticated, isLoading, login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
@@ -39,7 +41,11 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
   }, [isAuthenticated, isLoading, navigate, redirectUrl]);
 
   const loginMutation = useMutation({
-    mutationFn: async (credentials: { email: string; password: string }) => {
+    mutationFn: async (credentials: {
+      email: string;
+      password: string;
+      username: string;
+    }) => {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -86,20 +92,30 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
     return true;
   };
 
+  const validateUsername = (username: string): boolean => {
+    setUsernameError("");
+    if (!username) {
+      setUsernameError("Username is required");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setEmailError("");
     setPasswordError("");
-
+    setUsernameError("");
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
+    const isUsernameValid = validateUsername(username);
 
-    if (!isEmailValid || !isPasswordValid) {
+    if (!isEmailValid || !isPasswordValid || !isUsernameValid) {
       return;
     }
 
-    loginMutation.mutate({ email, password });
+    loginMutation.mutate({ email, password, username });
   };
 
   if (isLoading) {
@@ -114,7 +130,7 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
     return null;
   }
 
-  const hasErrors = emailError || passwordError || error;
+  const hasErrors = emailError || passwordError || usernameError || error;
 
   return (
     <Card>
@@ -130,11 +146,22 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
             isLogin={true}
             emailError={emailError}
             passwordError={passwordError}
+            usernameError={usernameError}
             serverError={error}
           />
         )}
         <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="username">Username</FieldLabel>
+              <Input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className={usernameError ? "border-red-500" : ""}
+              />
+            </Field>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input

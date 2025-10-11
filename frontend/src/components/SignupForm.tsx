@@ -24,6 +24,8 @@ export function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
@@ -37,7 +39,11 @@ export function SignupForm() {
   }, [isAuthenticated, isLoading, navigate]);
 
   const registerMutation = useMutation({
-    mutationFn: async (userData: { email: string; password: string }) => {
+    mutationFn: async (userData: {
+      email: string;
+      password: string;
+      username: string;
+    }) => {
       const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -100,22 +106,36 @@ export function SignupForm() {
     return true;
   };
 
+  const validateUsername = (username: string): boolean => {
+    setUsernameError("");
+    if (!username) {
+      setUsernameError("Username is required");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
-
+    setUsernameError("");
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
     const isConfirmPasswordValid = validateConfirmPassword(confirmPassword);
-
-    if (!isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
+    const isUsernameValid = validateUsername(username);
+    if (
+      !isEmailValid ||
+      !isPasswordValid ||
+      !isConfirmPasswordValid ||
+      !isUsernameValid
+    ) {
       return;
     }
 
-    registerMutation.mutate({ email, password });
+    registerMutation.mutate({ email, password, username });
   };
 
   if (isLoading) {
@@ -131,7 +151,11 @@ export function SignupForm() {
   }
 
   const hasErrors =
-    emailError || passwordError || confirmPasswordError || error;
+    emailError ||
+    passwordError ||
+    confirmPasswordError ||
+    usernameError ||
+    error;
 
   return (
     <Card>
@@ -148,11 +172,22 @@ export function SignupForm() {
             emailError={emailError}
             passwordError={passwordError}
             confirmPasswordError={confirmPasswordError}
+            usernameError={usernameError}
             serverError={error}
           />
         )}
         <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="username">Username</FieldLabel>
+              <Input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className={usernameError ? "border-red-500" : ""}
+              />
+            </Field>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
