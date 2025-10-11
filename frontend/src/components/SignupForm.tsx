@@ -17,12 +17,16 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { AlertBox } from "@/components/AlertBox";
 
 export function SignupForm() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [error, setError] = useState("");
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -56,12 +60,58 @@ export function SignupForm() {
     },
   });
 
+  const validateEmail = (email: string): boolean => {
+    setEmailError("");
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    return true;
+  };
+
+  const validatePassword = (password: string): boolean => {
+    setPasswordError("");
+    if (!password) {
+      setPasswordError("Password is required");
+      return false;
+    }
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+      return false;
+    }
+    return true;
+  };
+
+  const validateConfirmPassword = (confirmPassword: string): boolean => {
+    setConfirmPasswordError("");
+    if (!confirmPassword) {
+      setConfirmPasswordError("Please confirm your password");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setEmailError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+    const isConfirmPasswordValid = validateConfirmPassword(confirmPassword);
+
+    if (!isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
       return;
     }
 
@@ -80,17 +130,28 @@ export function SignupForm() {
     return null;
   }
 
+  const hasErrors =
+    emailError || passwordError || confirmPasswordError || error;
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>
-          {error && <span className="text-red-500">{error}</span>}
-          {!error && "Enter your information below to create your account"}
+          Enter your information below to create your account
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit}>
+        {hasErrors && (
+          <AlertBox
+            isLogin={false}
+            emailError={emailError}
+            passwordError={passwordError}
+            confirmPasswordError={confirmPasswordError}
+            serverError={error}
+          />
+        )}
+        <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -100,6 +161,7 @@ export function SignupForm() {
                 placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className={emailError ? "border-red-500" : ""}
               />
             </Field>
             <Field>
@@ -109,6 +171,7 @@ export function SignupForm() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className={passwordError ? "border-red-500" : ""}
               />
               <FieldDescription>
                 Must be at least 8 characters long.
@@ -123,6 +186,7 @@ export function SignupForm() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                className={confirmPasswordError ? "border-red-500" : ""}
               />
               <FieldDescription>Please confirm your password.</FieldDescription>
             </Field>

@@ -17,19 +17,26 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { AlertBox } from "@/components/AlertBox";
 
-export function LoginForm() {
+interface LoginFormProps {
+  redirectUrl?: string;
+}
+
+export function LoginForm({ redirectUrl }: LoginFormProps) {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      navigate({ to: "/" });
+      navigate({ to: redirectUrl || "/" });
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, isLoading, navigate, redirectUrl]);
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
@@ -49,16 +56,49 @@ export function LoginForm() {
     },
     onSuccess: (data) => {
       login(data.user);
-      navigate({ to: "/" });
+      navigate({ to: redirectUrl || "/" });
     },
     onError: (error: Error) => {
       setError(error.message);
     },
   });
 
+  const validateEmail = (email: string): boolean => {
+    setEmailError("");
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    return true;
+  };
+
+  const validatePassword = (password: string): boolean => {
+    setPasswordError("");
+    if (!password) {
+      setPasswordError("Password is required");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setEmailError("");
+    setPasswordError("");
+
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+
+    if (!isEmailValid || !isPasswordValid) {
+      return;
+    }
+
     loginMutation.mutate({ email, password });
   };
 
@@ -74,17 +114,26 @@ export function LoginForm() {
     return null;
   }
 
+  const hasErrors = emailError || passwordError || error;
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Sign in to your account</CardTitle>
         <CardDescription>
-          {error && <span className="text-red-500">{error}</span>}
-          {!error && "Enter your email and password to sign in"}
+          Enter your email and password to sign in
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit}>
+        {hasErrors && (
+          <AlertBox
+            isLogin={true}
+            emailError={emailError}
+            passwordError={passwordError}
+            serverError={error}
+          />
+        )}
+        <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -94,6 +143,7 @@ export function LoginForm() {
                 placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className={emailError ? "border-red-500" : ""}
               />
             </Field>
             <Field>
@@ -103,6 +153,7 @@ export function LoginForm() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className={passwordError ? "border-red-500" : ""}
               />
             </Field>
             <FieldGroup>
