@@ -1,8 +1,8 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 import "./index.css";
 
 // Import the generated route tree
@@ -23,6 +23,10 @@ const router = createRouter({
   routeTree,
   context: {
     queryClient,
+    auth: {
+      isAuthenticated: false,
+      user: null,
+    },
   },
   defaultPreload: "intent",
   // Since we're using React Query, we don't want loader calls to ever be stale
@@ -38,6 +42,28 @@ declare module "@tanstack/react-router" {
   }
 }
 
+function InnerApp() {
+  const auth = useAuth();
+
+  // Invalidate router when auth state changes to re-check all guards
+  useEffect(() => {
+    router.invalidate();
+  }, [auth.isAuthenticated]);
+
+  return (
+    <RouterProvider
+      router={router}
+      context={{
+        queryClient,
+        auth: {
+          isAuthenticated: auth.isAuthenticated,
+          user: auth.user,
+        },
+      }}
+    />
+  );
+}
+
 // Render the app
 const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
@@ -46,7 +72,7 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <RouterProvider router={router} />
+          <InnerApp />
         </AuthProvider>
       </QueryClientProvider>
       ,

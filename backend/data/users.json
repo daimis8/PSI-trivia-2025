@@ -8,5 +8,15 @@
     "Id": 2,
     "Email": "da@gmail.com",
     "Password": "$2a$11$r7RpT7s4wMgMw34vaZmwa.lXzyeIOwqcdF41G7ThDmdzQEKCXBFpS"
+  },
+  "dai@gmail.com": {
+    "Id": 3,
+    "Email": "dai@gmail.com",
+    "Password": "$2a$11$EcvGPtv0X3JGioqlzu/lG.j.LcfpZcrMgBHmsR58yCTbRK2g95VMu"
+  },
+  "1d2nj@gmail.com": {
+    "Id": 4,
+    "Email": "1d2nj@gmail.com",
+    "Password": "$2a$11$nUahgQ/XPFVZID6EQMtcge1YMlpCHeVcP9Q7JOrFGgUT0k/cLGTuC"
   }
 }

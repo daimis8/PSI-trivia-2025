@@ -1,11 +1,20 @@
 import {
-  createRootRoute,
+  createRootRouteWithContext,
   Link,
   Outlet,
   useNavigate,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { useAuth } from "@/context/AuthContext";
+import type { QueryClient } from "@tanstack/react-query";
+
+interface RouterContext {
+  queryClient: QueryClient;
+  auth: {
+    isAuthenticated: boolean;
+    user: { id: number; email: string } | null;
+  };
+}
 
 const RootLayout = () => {
   const { isAuthenticated, user, logout, isLoading } = useAuth();
@@ -59,4 +68,6 @@ const RootLayout = () => {
   );
 };
 
-export const Route = createRootRoute({ component: RootLayout });
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: RootLayout,
+});
