@@ -1,4 +1,5 @@
 using backend.Models;
+using System.Text.RegularExpressions;
 
 namespace backend.Services;
 
@@ -6,6 +7,10 @@ public class UserService
 {
     private readonly DataStorage<User> _storage;
     private readonly PasswordService _passwordService;
+    private static readonly Regex EmailRegex = new Regex(
+        @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase
+    );
 
     public UserService(PasswordService passwordService)
     {
@@ -80,5 +85,114 @@ public class UserService
     public bool IsUsernameValid(string username)
     {
         return _storage.GetAll().Any(u => u.Username == username);
+    }
+
+    // Update username
+    public async Task<(User? user, string? error)> UpdateUsernameAsync(int userId, string newUsername)
+    {
+        // Validate username is not empty
+        if (string.IsNullOrWhiteSpace(newUsername))
+        {
+            return (null, "Username cannot be empty");
+        }
+
+        // Validate username length
+        if (newUsername.Length < 3)
+        {
+            return (null, "Username must be at least 3 characters long");
+        }
+
+        var user = _storage.GetAll().FirstOrDefault(u => u.Id == userId);
+        
+        if (user == null)
+        {
+            return (null, "User not found");
+        }
+
+        // Check if new username is already taken by another user
+        var existingUser = _storage.GetAll().FirstOrDefault(u => u.Username == newUsername && u.Id != userId);
+        if (existingUser != null)
+        {
+            return (null, "Username already taken");
+        }
+
+        user.Username = newUsername;
+        await _storage.SetAsync(user.Email, user);
+        
+        return (user, null);
+    }
+
+    // Update email
+    public async Task<(User? user, string? error)> UpdateEmailAsync(int userId, string newEmail)
+    {
+        // Validate email is not empty
+        if (string.IsNullOrWhiteSpace(newEmail))
+        {
+            return (null, "Email cannot be empty");
+        }
+
+        // Validate email format
+        if (!EmailRegex.IsMatch(newEmail))
+        {
+            return (null, "Invalid email format");
+        }
+
+        var user = _storage.GetAll().FirstOrDefault(u => u.Id == userId);
+        
+        if (user == null)
+        {
+            return (null, "User not found");
+        }
+
+        // Check if new email is already taken
+        var existingUser = _storage.GetAll().FirstOrDefault(u => u.Email == newEmail && u.Id != userId);
+        if (existingUser != null)
+        {
+            return (null, "Email already taken");
+        }
+
+        var oldEmail = user.Email;
+        user.Email = newEmail;
+        
+        // Remove old email key and add new one
+        await _storage.RemoveAsync(oldEmail);
+        await _storage.SetAsync(newEmail, user);
+        
+        return (user, null);
+    }
+
+    // Update password
+    public async Task<(bool success, string? error)> UpdatePasswordAsync(int userId, string currentPassword, string newPassword)
+    {
+        // Validate new password is not empty
+        if (string.IsNullOrWhiteSpace(newPassword))
+        {
+            return (false, "Password cannot be empty");
+        }
+
+        // Validate password length
+        if (newPassword.Length < 8)
+        {
+            return (false, "Password must be at least 8 characters long");
+        }
+
+        var user = _storage.GetAll().FirstOrDefault(u => u.Id == userId);
+        
+        if (user == null)
+        {
+            return (false, "User not found");
+        }
+
+        // Verify current password
+        if (!_passwordService.VerifyPassword(currentPassword, user.Password))
+        {
+            return (false, "Current password is incorrect");
+        }
+
+        // Hash and update password
+        user.Password = _passwordService.HashPassword(newPassword);
+        await _storage.SetAsync(user.Email, user);
+        
+        return (true, null);
     }
 }
