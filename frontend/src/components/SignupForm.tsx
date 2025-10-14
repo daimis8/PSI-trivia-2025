@@ -150,7 +150,7 @@ export function SignupForm() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className={usernameError ? "border-red-500" : ""}
+                className={`text-white ${usernameError ? "border-red-500" : ""}`}
               />
             </Field>
             <Field>
@@ -163,7 +163,7 @@ export function SignupForm() {
                 placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={emailError ? "border-red-500" : ""}
+                className={`text-white ${emailError ? "border-red-500" : ""}`}
               />
             </Field>
             <Field>
@@ -175,7 +175,7 @@ export function SignupForm() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={passwordError ? "border-red-500" : ""}
+                className={`text-white ${passwordError ? "border-red-500" : ""}`}
               />
               <FieldDescription>
                 Must be at least 8 characters long.
@@ -190,7 +190,7 @@ export function SignupForm() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className={confirmPasswordError ? "border-red-500" : ""}
+                className={`text-white ${confirmPasswordError ? "border-red-500" : ""}`}
               />
               <FieldDescription>Please confirm your password.</FieldDescription>
             </Field>
