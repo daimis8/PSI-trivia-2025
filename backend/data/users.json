@@ -3,6 +3,12 @@
     "Id": 1,
     "Username": "daimis",
     "Email": "d@gmail.com",
-    "Password": "$2a$11$Q4MaWLN.OdGQHwM3n0Kx9ufUjTpt8Fj0to1lsJoAJ9.G6Vwss/.cW"
+    "Password": "$2a$11$TxSChzbTPOrQXbdmP.SsH.7ffawjiRGHe5JO2PyhjLr2piC7B10d2"
+  },
+  "da@gmail.com": {
+    "Id": 2,
+    "Username": "m12ko1212l",
+    "Email": "da@gmail.com",
+    "Password": "$2a$11$aYokxIpXiY6bqVkEBQPh3OWieZ60RfTiYrI4g7QMYnvg.lsX8umi2"
   }
 }

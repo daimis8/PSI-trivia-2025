@@ -18,6 +18,12 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AlertBox } from "@/components/AlertBox";
+import {
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+  validateUsername,
+} from "@/lib/validation";
 
 export function SignupForm() {
   const navigate = useNavigate();
@@ -66,71 +72,28 @@ export function SignupForm() {
     },
   });
 
-  const validateEmail = (email: string): boolean => {
-    setEmailError("");
-    if (!email) {
-      setEmailError("Email is required");
-      return false;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError("Please enter a valid email address");
-      return false;
-    }
-    return true;
-  };
-
-  const validatePassword = (password: string): boolean => {
-    setPasswordError("");
-    if (!password) {
-      setPasswordError("Password is required");
-      return false;
-    }
-    if (password.length < 8) {
-      setPasswordError("Password must be at least 8 characters long");
-      return false;
-    }
-    return true;
-  };
-
-  const validateConfirmPassword = (confirmPassword: string): boolean => {
-    setConfirmPasswordError("");
-    if (!confirmPassword) {
-      setConfirmPasswordError("Please confirm your password");
-      return false;
-    }
-    if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match");
-      return false;
-    }
-    return true;
-  };
-
-  const validateUsername = (username: string): boolean => {
-    setUsernameError("");
-    if (!username) {
-      setUsernameError("Username is required");
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    setEmailError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-    setUsernameError("");
-    const isEmailValid = validateEmail(email);
-    const isPasswordValid = validatePassword(password);
-    const isConfirmPasswordValid = validateConfirmPassword(confirmPassword);
-    const isUsernameValid = validateUsername(username);
+
+    const emailValidation = validateEmail(email);
+    const passwordValidation = validatePassword(password);
+    const confirmPasswordValidation = validateConfirmPassword(
+      password,
+      confirmPassword
+    );
+    const usernameValidation = validateUsername(username);
+
+    setEmailError(emailValidation);
+    setPasswordError(passwordValidation);
+    setConfirmPasswordError(confirmPasswordValidation);
+    setUsernameError(usernameValidation);
+
     if (
-      !isEmailValid ||
-      !isPasswordValid ||
-      !isConfirmPasswordValid ||
-      !isUsernameValid
+      emailValidation ||
+      passwordValidation ||
+      confirmPasswordValidation ||
+      usernameValidation
     ) {
       return;
     }
@@ -158,9 +121,9 @@ export function SignupForm() {
     error;
 
   return (
-    <Card>
+    <Card className="bg-card-dark">
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
+        <CardTitle className="text-white">Create an account</CardTitle>
         <CardDescription>
           Enter your information below to create your account
         </CardDescription>
@@ -179,7 +142,9 @@ export function SignupForm() {
         <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="username">Username</FieldLabel>
+              <FieldLabel htmlFor="username" className="text-white">
+                Username
+              </FieldLabel>
               <Input
                 id="username"
                 type="text"
@@ -189,7 +154,9 @@ export function SignupForm() {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email" className="text-white">
+                Email
+              </FieldLabel>
               <Input
                 id="email"
                 type="email"
@@ -200,7 +167,9 @@ export function SignupForm() {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <FieldLabel htmlFor="password" className="text-white">
+                Password
+              </FieldLabel>
               <Input
                 id="password"
                 type="password"
@@ -213,7 +182,7 @@ export function SignupForm() {
               </FieldDescription>
             </Field>
             <Field>
-              <FieldLabel htmlFor="confirm-password">
+              <FieldLabel htmlFor="confirm-password" className="text-white">
                 Confirm Password
               </FieldLabel>
               <Input
@@ -227,7 +196,11 @@ export function SignupForm() {
             </Field>
             <FieldGroup>
               <Field>
-                <Button type="submit" disabled={registerMutation.isPending}>
+                <Button
+                  type="submit"
+                  disabled={registerMutation.isPending}
+                  className="border border-white cursor-pointer"
+                >
                   {registerMutation.isPending
                     ? "Creating Account..."
                     : "Create Account"}

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 interface User {
   id: number;
   email: string;
+  username: string;
 }
 
 interface AuthResponse {

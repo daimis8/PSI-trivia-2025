@@ -18,6 +18,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AlertBox } from "@/components/AlertBox";
+import {
+  validateEmail,
+  validateLoginPassword,
+  validateUsername,
+} from "@/lib/validation";
 
 interface LoginFormProps {
   redirectUrl?: string;
@@ -69,49 +74,19 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
     },
   });
 
-  const validateEmail = (email: string): boolean => {
-    setEmailError("");
-    if (!email) {
-      setEmailError("Email is required");
-      return false;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError("Please enter a valid email address");
-      return false;
-    }
-    return true;
-  };
-
-  const validatePassword = (password: string): boolean => {
-    setPasswordError("");
-    if (!password) {
-      setPasswordError("Password is required");
-      return false;
-    }
-    return true;
-  };
-
-  const validateUsername = (username: string): boolean => {
-    setUsernameError("");
-    if (!username) {
-      setUsernameError("Username is required");
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    setEmailError("");
-    setPasswordError("");
-    setUsernameError("");
-    const isEmailValid = validateEmail(email);
-    const isPasswordValid = validatePassword(password);
-    const isUsernameValid = validateUsername(username);
 
-    if (!isEmailValid || !isPasswordValid || !isUsernameValid) {
+    const emailValidation = validateEmail(email);
+    const passwordValidation = validateLoginPassword(password);
+    const usernameValidation = validateUsername(username);
+
+    setEmailError(emailValidation);
+    setPasswordError(passwordValidation);
+    setUsernameError(usernameValidation);
+
+    if (emailValidation || passwordValidation || usernameValidation) {
       return;
     }
 
@@ -133,9 +108,9 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
   const hasErrors = emailError || passwordError || usernameError || error;
 
   return (
-    <Card>
+    <Card className="bg-card-dark">
       <CardHeader>
-        <CardTitle>Sign in to your account</CardTitle>
+        <CardTitle className="text-white">Sign in to your account</CardTitle>
         <CardDescription>
           Enter your email and password to sign in
         </CardDescription>
@@ -153,7 +128,9 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
         <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="username">Username</FieldLabel>
+              <FieldLabel htmlFor="username" className="text-white">
+                Username
+              </FieldLabel>
               <Input
                 id="username"
                 type="text"
@@ -163,7 +140,9 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email" className="text-white">
+                Email
+              </FieldLabel>
               <Input
                 id="email"
                 type="email"
@@ -174,7 +153,9 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <FieldLabel htmlFor="password" className="text-white">
+                Password
+              </FieldLabel>
               <Input
                 id="password"
                 type="password"
@@ -185,7 +166,11 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
             </Field>
             <FieldGroup>
               <Field>
-                <Button type="submit" disabled={loginMutation.isPending}>
+                <Button
+                  type="submit"
+                  disabled={loginMutation.isPending}
+                  className="border border-white cursor-pointer"
+                >
                   {loginMutation.isPending ? "Signing in..." : "Sign in"}
                 </Button>
                 <FieldDescription className="px-6 text-center">
