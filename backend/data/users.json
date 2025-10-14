@@ -10,5 +10,11 @@
     "Username": "m12ko1212l",
     "Email": "da@gmail.com",
     "Password": "$2a$11$aYokxIpXiY6bqVkEBQPh3OWieZ60RfTiYrI4g7QMYnvg.lsX8umi2"
+  },
+  "test@test.com": {
+    "Id": 3,
+    "Username": "Test",
+    "Email": "test@test.com",
+    "Password": "$2a$11$SB80emQOoMWGuR5ReNwgvu/SAKeu2WkEUYYsUuiKQ7R/TZ5uyjRZu"
   }
 }

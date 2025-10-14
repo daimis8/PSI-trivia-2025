@@ -1,0 +1,44 @@
+{
+  "1": {
+    "ID": 1,
+    "CreatorID": 3,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": []
+  },
+  "2": {
+    "ID": 2,
+    "CreatorID": 3,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": []
+  },
+  "3": {
+    "ID": 3,
+    "CreatorID": 3,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": []
+  },
+  "4": {
+    "ID": 4,
+    "CreatorID": 3,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": []
+  },
+  "5": {
+    "ID": 5,
+    "CreatorID": 3,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": []
+  },
+  "6": {
+    "ID": 6,
+    "CreatorID": 3,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": []
+  }
+}

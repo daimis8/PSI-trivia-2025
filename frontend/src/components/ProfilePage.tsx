@@ -45,7 +45,7 @@ export function ProfilePage() {
   ];
 
   return (
-    <div className="p-8">
+    <>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold tracking-tight">
           Profile
@@ -133,6 +133,6 @@ export function ProfilePage() {
       </div>
 
       <EditProfileDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
-    </div>
+    </>
   );
 }
