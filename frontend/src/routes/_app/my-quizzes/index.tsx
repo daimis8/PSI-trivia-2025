@@ -1,10 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, PlusCircle } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Loader2, PlusCircle, CircleQuestionMark, Edit, Trash2, FileText, ListChecks, AlertTriangle } from "lucide-react";
 import ErrorComponent from "@/components/Error";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { CircleQuestionMark } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_app/my-quizzes/")({
 	component: RouteComponent,
@@ -12,6 +28,9 @@ export const Route = createFileRoute("/_app/my-quizzes/")({
 
 function RouteComponent() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [quizToDelete, setQuizToDelete] = useState<any>(null);
 
 	const { isPending, isError, data } = useQuery({
 		queryKey: ["my-quizzes"],
@@ -40,6 +59,36 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: ["my-quizzes"] });
     },
   });
+
+  const { mutate: deleteQuiz, isPending: isDeleting } = useMutation({
+    mutationFn: async (quizId: number) => {
+      const response = await fetch(`/api/quizzes/${quizId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete quiz");
+      }
+
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-quizzes"] });
+      setDeleteDialogOpen(false);
+      setQuizToDelete(null);
+    },
+  });
+
+  const handleDeleteClick = (quiz: any) => {
+    setQuizToDelete(quiz);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (quizToDelete) {
+      deleteQuiz(quizToDelete.id);
+    }
+  };
 
 	if (isPending) {
 		return (
@@ -86,16 +135,97 @@ function RouteComponent() {
           </EmptyContent>
         </Empty>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.map((quiz: any) => (
-            <div key={quiz.id} className="border p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <h2 className="text-xl font-semibold mb-2">{quiz.title}</h2>
-              <p className="text-gray-600 mb-4">{quiz.description}</p>
-              <Button variant="default" size="sm">Edit Quiz</Button>
-            </div>
+            <Card key={quiz.id} className="hover:shadow-lg transition-shadow duration-300 flex flex-col">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">
+                    <CardTitle className="text-xl line-clamp-2 mb-2">
+                      {quiz.title || "Untitled Quiz"}
+                    </CardTitle>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <ListChecks className="size-4" />
+                      <span>{quiz.questions?.length || 0} question{quiz.questions?.length !== 1 ? 's' : ''}</span>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="pb-3 flex-1">
+                <div className="flex items-start gap-2 text-muted-foreground">
+                  <FileText className="size-4 mt-0.5 shrink-0" />
+                  <CardDescription className="line-clamp-3">
+                    {quiz.description || "No description provided yet."}
+                  </CardDescription>
+                </div>
+              </CardContent>
+              
+              <CardFooter className="pt-3 flex gap-2">
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  className="flex-1 gap-2"
+                  onClick={() => navigate({ to: `/my-quizzes/${quiz.id}` })}
+                >
+                  <Edit className="size-4" />
+                  Edit
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => handleDeleteClick(quiz)}
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       )}
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="size-5 text-destructive" />
+              Delete Quiz
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{quizToDelete?.title || "this quiz"}"? 
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="size-4" />
+                  Delete
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 		</>
 	);
 }

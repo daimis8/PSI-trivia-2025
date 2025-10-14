@@ -41,4 +41,16 @@ public class QuizService
         await _storage.SetAsync(quiz.ID, quiz);
         return quiz;
     }
+
+    public async Task<bool> DeleteQuizAsync(int quizId)
+    {
+        var quiz = await GetQuizByIdAsync(quizId);
+        if (quiz == null)
+        {
+            return false;
+        }
+
+        await _storage.RemoveAsync(quizId);
+        return true;
+    }
 }

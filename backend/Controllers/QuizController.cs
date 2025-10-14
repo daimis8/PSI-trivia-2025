@@ -56,6 +56,20 @@ public class QuizController : ControllerBase
         return Ok(quiz);
     }
 
+    // Delete quiz by ID
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteById(int id)
+    {
+        var result = await _quizService.DeleteQuizAsync(id);
+        if (!result)
+        {
+            return NotFound(new { message = "Quiz not found" });
+        }
+
+        return Ok();
+    }
+
     // Create a new quiz
     [Authorize]
     [HttpPost("my")]
