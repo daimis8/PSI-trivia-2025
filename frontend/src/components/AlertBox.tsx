@@ -7,6 +7,7 @@ interface AlertBoxProps {
   emailError: string;
   passwordError: string;
   confirmPasswordError?: string;
+  usernameError: string;
   serverError?: string;
 }
 
@@ -15,12 +16,14 @@ export function AlertBox({
   emailError,
   passwordError,
   confirmPasswordError,
+  usernameError,
   serverError,
 }: AlertBoxProps) {
   const errors = [
     emailError,
     passwordError,
     confirmPasswordError,
+    usernameError,
     serverError,
   ].filter(Boolean);
 
@@ -47,6 +50,7 @@ export function AlertBox({
                 {emailError && <li>{emailError}</li>}
                 {passwordError && <li>{passwordError}</li>}
                 {confirmPasswordError && <li>{confirmPasswordError}</li>}
+                {usernameError && <li>{usernameError}</li>}
               </ul>
             </>
           )}

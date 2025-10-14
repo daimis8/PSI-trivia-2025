@@ -44,6 +44,12 @@ public class UserService
         var user = _storage.GetAll().FirstOrDefault(u => u.Id == id);
         return Task.FromResult(user);
     }
+    // Get user by username
+    public Task<User?> GetUserByUsernameAsync(string username)
+    {
+        var user = _storage.GetAll().FirstOrDefault(u => u.Username == username);
+        return Task.FromResult(user);
+    }
 
     // Delete user by ID
     public async Task<bool> DeleteUserAsync(int id)
@@ -57,7 +63,7 @@ public class UserService
     }
 
     // Validate user login
-    public Task<User?> ValidateLoginAsync(string email, string password)
+    public Task<User?> ValidateLoginAsync(string email, string password, string username)
     {
         var user = _storage.Get(email);
         
@@ -67,7 +73,12 @@ public class UserService
         }
         
         bool isPasswordValid = _passwordService.VerifyPassword(password, user.Password);
-        
+        bool isUsernameValid = IsUsernameValid(username);
         return Task.FromResult(isPasswordValid ? user : null);
+    }
+
+    public bool IsUsernameValid(string username)
+    {
+        return _storage.GetAll().Any(u => u.Username == username);
     }
 }

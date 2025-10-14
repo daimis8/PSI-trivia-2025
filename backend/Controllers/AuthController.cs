@@ -31,8 +31,8 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] User user)
     {
-        var existingUser = await _userService.GetUserByEmailAsync(user.Email);
-        if (existingUser != null)
+        var existingUserByEmail = await _userService.GetUserByEmailAsync(user.Email);
+        if (existingUserByEmail != null)
         {
             return BadRequest(new { message = "Email already exists" });
         }
@@ -40,6 +40,12 @@ public class AuthController : ControllerBase
         if (user.Password.Length < 8)
         {
             return BadRequest(new { message = "Password must be at least 8 characters long" });
+        }
+
+        var existingUserByUsername = await _userService.GetUserByUsernameAsync(user.Username);
+        if (existingUserByUsername != null)
+        {
+            return BadRequest(new { message = "Username already exists" });
         }
 
         if (!EmailRegex.IsMatch(user.Email))
@@ -61,16 +67,16 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+        if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Username))
         {
             return BadRequest(new { message = "Email and password are required" });
         }
 
-        var user = await _userService.ValidateLoginAsync(request.Email, request.Password);
+        var user = await _userService.ValidateLoginAsync(request.Email, request.Password, request.Username);
         
         if (user == null)
         {
-            return Unauthorized(new { message = "Invalid email or password" });
+            return Unauthorized(new { message = "Invalid email, password or username" });
         }
 
         var token = _jwtService.GenerateToken(user);
@@ -89,6 +95,7 @@ public class AuthController : ControllerBase
             user = new 
             {
                 id = user.Id,
+                username = user.Username,
                 email = user.Email
             },
             message = "Login successful"
@@ -110,6 +117,7 @@ public class AuthController : ControllerBase
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        var username = User.FindFirst(ClaimTypes.Name)?.Value;
 
         if (userId == null || email == null)
         {
@@ -129,6 +137,7 @@ public class AuthController : ControllerBase
             user = new 
             {
                 id = int.Parse(userId),
+                username = username,
                 email = email
             },
             message = "Authorized" 
