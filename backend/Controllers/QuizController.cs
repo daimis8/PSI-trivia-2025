@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.Models;
+using backend.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
@@ -24,7 +25,8 @@ public class QuizController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var quizzes = await _quizService.GetAllQuizzesAsync();
-        return Ok(quizzes);
+        var response = quizzes.Select(MapToResponse).ToList();
+        return Ok(response);
     }
 
     // Get all personal quizes
@@ -40,7 +42,8 @@ public class QuizController : ControllerBase
         }
 
         var quizzes = await _quizService.GetQuizzesByUserIdAsync(userId);
-        return Ok(quizzes);
+        var response = quizzes.Select(MapToResponse).ToList();
+        return Ok(response);
     }
 
     // Get quiz by ID
@@ -53,7 +56,8 @@ public class QuizController : ControllerBase
             return NotFound(new { message = "Quiz not found" });
         }
 
-        return Ok(quiz);
+        var response = MapToResponse(quiz);
+        return Ok(response);
     }
 
     // Delete quiz by ID
@@ -73,7 +77,7 @@ public class QuizController : ControllerBase
     // Create a new quiz
     [Authorize]
     [HttpPost("my")]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create([FromBody] CreateQuizRequest? request)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -84,20 +88,21 @@ public class QuizController : ControllerBase
 
         var quiz = new Quiz
         {
-            Title = "New Quiz",
-            Description = "",
+            Title = request?.Title ?? "New Quiz",
+            Description = request?.Description ?? "",
             CreatorID = int.Parse(userId),
             Questions = new List<QuizQuestion>()
         };
 
         var createdQuiz = await _quizService.CreateQuizAsync(quiz);
-        return CreatedAtAction(nameof(GetById), new { id = createdQuiz.ID }, createdQuiz);
+        var response = MapToResponse(createdQuiz);
+        return CreatedAtAction(nameof(GetById), new { id = createdQuiz.ID }, response);
     }
 
     // Update a quiz
     [Authorize]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] Quiz quiz)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateQuizRequest request)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -117,9 +122,47 @@ public class QuizController : ControllerBase
             return Forbid();
         }
 
-        quiz.CreatorID = existingQuiz.CreatorID;
+        var quiz = new Quiz
+        {
+            ID = id,
+            CreatorID = existingQuiz.CreatorID,
+            Title = request.Title,
+            Description = request.Description,
+            Questions = request.Questions.Select(q => new QuizQuestion
+            {
+                Id = q.Id,
+                QuestionText = q.QuestionText,
+                Options = q.Options,
+                CorrectOptionIndex = q.CorrectOptionIndex
+            }).ToList()
+        };
+
         var updatedQuiz = await _quizService.UpdateQuizAsync(id, quiz);
         
-        return Ok(updatedQuiz);
+        if (updatedQuiz == null)
+        {
+            return NotFound(new { message = "Quiz not found" });
+        }
+
+        var response = MapToResponse(updatedQuiz);
+        return Ok(response);
+    }
+
+    private static QuizResponse MapToResponse(Quiz quiz)
+    {
+        return new QuizResponse
+        {
+            ID = quiz.ID,
+            CreatorID = quiz.CreatorID,
+            Title = quiz.Title,
+            Description = quiz.Description,
+            Questions = quiz.Questions.Select(q => new QuizQuestionDto
+            {
+                Id = q.Id,
+                QuestionText = q.QuestionText,
+                Options = q.Options,
+                CorrectOptionIndex = q.CorrectOptionIndex
+            }).ToList()
+        };
     }
 }

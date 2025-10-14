@@ -19,8 +19,15 @@
           "Correct",
           "Wrong"
         ],
-        "CorrectOptionIndex": 0
+        "CorrectOptionIndex": 1
       }
     ]
+  },
+  "6": {
+    "ID": 6,
+    "CreatorID": 3,
+    "Title": "Testas",
+    "Description": "",
+    "Questions": []
   }
 }

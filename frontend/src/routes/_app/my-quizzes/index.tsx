@@ -47,6 +47,9 @@ function RouteComponent() {
     mutationFn: async () => {
       const response = await fetch("/api/quizzes/my", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
       if (!response.ok) {
@@ -55,8 +58,9 @@ function RouteComponent() {
 
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-quizzes"] });
+    onSuccess: (data) => {
+      // Navigate to the edit page for the newly created quiz
+      navigate({ to: `/my-quizzes/${data.id}` });
     },
   });
 

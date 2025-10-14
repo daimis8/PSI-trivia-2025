@@ -65,7 +65,7 @@ function RouteComponent() {
     }
   }, [data]);
 
-  const { mutate: updateQuiz, isPending: isSaving, error } = useMutation({
+  const { mutate: updateQuiz, isPending: isSaving } = useMutation({
     mutationFn: async () => {
       const response = await fetch(`/api/quizzes/${quizId}`, {
         method: "PUT",
@@ -73,8 +73,6 @@ function RouteComponent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ID: data?.id,
-          CreatorID: data?.creatorID,
           Title: title,
           Description: description,
           Questions: questions.map(q => ({
