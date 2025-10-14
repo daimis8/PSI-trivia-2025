@@ -108,7 +108,7 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
   const hasErrors = emailError || passwordError || usernameError || error;
 
   return (
-    <Card className="bg-card-dark">
+    <Card className="bg-card">
       <CardHeader>
         <CardTitle className="text-white">Sign in to your account</CardTitle>
         <CardDescription>

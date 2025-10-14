@@ -47,7 +47,7 @@ export function ProfilePage() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold tracking-tight text-white">
+        <h1 className="text-4xl font-bold tracking-tight">
           Profile
         </h1>
 
@@ -63,7 +63,7 @@ export function ProfilePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
-          <Card className="bg-card-dark">
+          <Card className="bg-card">
             <CardContent className="flex flex-col items-center text-center pt-6 gap-2">
               <Avatar className="size-32 mb-4">
                 <AvatarImage src="https://github.com/shadcn.png" />
@@ -72,7 +72,7 @@ export function ProfilePage() {
                 </AvatarFallback>
               </Avatar>
 
-              <h2 className="text-2xl font-bold mb-1 text-white">
+              <h2 className="text-2xl font-bold mb-1">
                 {user?.username}
               </h2>
               <Badge variant="secondary" className="mb-6">
@@ -87,14 +87,14 @@ export function ProfilePage() {
             {stats.map((stat, index) => (
               <Card
                 key={index}
-                className="hover:shadow-md transition-shadow shadow-white bg-card-dark"
+                className="hover:shadow-md transition-shadow shadow-white bg-card"
               >
                 <CardContent className="flex items-center gap-4 py-8">
                   <div className="bg-card-darker p-3 rounded-lg">
                     <stat.icon className="size-6 text-muted-foreground" />
                   </div>
                   <div>
-                    <div className="text-3xl font-bold mb-1 text-white">
+                    <div className="text-3xl font-bold mb-1">
                       {stat.value}
                     </div>
                     <div className="text-muted-foreground text-sm">
@@ -107,7 +107,7 @@ export function ProfilePage() {
           </div>
           <Card className="bg-card-dark">
             <CardHeader>
-              <CardTitle className="text-white">Recent Activity</CardTitle>
+              <CardTitle>Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -117,7 +117,7 @@ export function ProfilePage() {
                       <Star className="size-5 text-muted-foreground" />
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium mb-1 text-white">
+                      <p className="font-medium mb-1">
                         {activity.title}
                       </p>
                       <p className="text-sm text-muted-foreground">
