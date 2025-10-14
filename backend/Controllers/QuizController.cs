@@ -93,4 +93,33 @@ public class QuizController : ControllerBase
         var createdQuiz = await _quizService.CreateQuizAsync(quiz);
         return CreatedAtAction(nameof(GetById), new { id = createdQuiz.ID }, createdQuiz);
     }
+
+    // Update a quiz
+    [Authorize]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] Quiz quiz)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+        {
+            return Unauthorized(new { message = "Unauthorized" });
+        }
+
+        var existingQuiz = await _quizService.GetQuizByIdAsync(id);
+        if (existingQuiz == null)
+        {
+            return NotFound(new { message = "Quiz not found" });
+        }
+
+        if (existingQuiz.CreatorID != int.Parse(userId))
+        {
+            return Forbid();
+        }
+
+        quiz.CreatorID = existingQuiz.CreatorID;
+        var updatedQuiz = await _quizService.UpdateQuizAsync(id, quiz);
+        
+        return Ok(updatedQuiz);
+    }
 }

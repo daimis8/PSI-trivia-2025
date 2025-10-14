@@ -9,8 +9,18 @@
   "3": {
     "ID": 3,
     "CreatorID": 3,
-    "Title": "New Quiz",
-    "Description": "",
-    "Questions": []
+    "Title": "Testing",
+    "Description": "testing",
+    "Questions": [
+      {
+        "Id": 1,
+        "QuestionText": "First Question",
+        "Options": [
+          "Correct",
+          "Wrong"
+        ],
+        "CorrectOptionIndex": 0
+      }
+    ]
   }
 }
