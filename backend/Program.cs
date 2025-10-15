@@ -25,6 +25,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<PasswordService>();
+builder.Services.AddSingleton<QuizService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

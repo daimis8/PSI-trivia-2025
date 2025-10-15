@@ -123,7 +123,7 @@ export function SignupForm() {
   return (
     <Card className="bg-card-dark">
       <CardHeader>
-        <CardTitle className="text-white">Create an account</CardTitle>
+        <CardTitle>Create an account</CardTitle>
         <CardDescription>
           Enter your information below to create your account
         </CardDescription>
@@ -142,7 +142,7 @@ export function SignupForm() {
         <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="username" className="text-white">
+              <FieldLabel htmlFor="username">
                 Username
               </FieldLabel>
               <Input
@@ -150,11 +150,11 @@ export function SignupForm() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className={`text-white ${usernameError ? "border-red-500" : ""}`}
+                className={`${usernameError ? "border-red-500" : ""}`}
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="email" className="text-white">
+              <FieldLabel htmlFor="email">
                 Email
               </FieldLabel>
               <Input
@@ -163,11 +163,11 @@ export function SignupForm() {
                 placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`text-white ${emailError ? "border-red-500" : ""}`}
+                className={`${emailError ? "border-red-500" : ""}`}
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password" className="text-white">
+              <FieldLabel htmlFor="password">
                 Password
               </FieldLabel>
               <Input
@@ -175,14 +175,14 @@ export function SignupForm() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`text-white ${passwordError ? "border-red-500" : ""}`}
+                className={`${passwordError ? "border-red-500" : ""}`}
               />
               <FieldDescription>
                 Must be at least 8 characters long.
               </FieldDescription>
             </Field>
             <Field>
-              <FieldLabel htmlFor="confirm-password" className="text-white">
+              <FieldLabel htmlFor="confirm-password">
                 Confirm Password
               </FieldLabel>
               <Input
@@ -190,7 +190,7 @@ export function SignupForm() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className={`text-white ${confirmPasswordError ? "border-red-500" : ""}`}
+                className={`${confirmPasswordError ? "border-red-500" : ""}`}  
               />
               <FieldDescription>Please confirm your password.</FieldDescription>
             </Field>

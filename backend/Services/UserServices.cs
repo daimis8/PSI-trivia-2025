@@ -5,7 +5,7 @@ namespace backend.Services;
 
 public class UserService
 {
-    private readonly DataStorage<User> _storage;
+    private readonly DataStorage<string, User> _storage;
     private readonly PasswordService _passwordService;
     private static readonly Regex EmailRegex = new Regex(
         @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
@@ -14,7 +14,7 @@ public class UserService
 
     public UserService(PasswordService passwordService)
     {
-        _storage = new DataStorage<User>("users.json");
+        _storage = new DataStorage<string, User>("users.json");
         _passwordService = passwordService;
     }
 

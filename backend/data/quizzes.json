@@ -1,0 +1,33 @@
+{
+  "5": {
+    "ID": 5,
+    "CreatorID": 3,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": []
+  },
+  "3": {
+    "ID": 3,
+    "CreatorID": 3,
+    "Title": "Testing",
+    "Description": "testing",
+    "Questions": [
+      {
+        "Id": 1,
+        "QuestionText": "First Question",
+        "Options": [
+          "Correct",
+          "Wrong"
+        ],
+        "CorrectOptionIndex": 1
+      }
+    ]
+  },
+  "6": {
+    "ID": 6,
+    "CreatorID": 3,
+    "Title": "Testas",
+    "Description": "",
+    "Questions": []
+  }
+}

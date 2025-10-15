@@ -108,9 +108,9 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
   const hasErrors = emailError || passwordError || usernameError || error;
 
   return (
-    <Card className="bg-card-dark">
+    <Card className="bg-card">
       <CardHeader>
-        <CardTitle className="text-white">Sign in to your account</CardTitle>
+        <CardTitle>Sign in to your account</CardTitle>
         <CardDescription>
           Enter your email and password to sign in
         </CardDescription>
@@ -128,7 +128,7 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
         <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="username" className="text-white">
+              <FieldLabel htmlFor="username">
                 Username
               </FieldLabel>
               <Input
@@ -136,11 +136,11 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className={`text-white ${usernameError ? "border-red-500" : ""}`}
+                className={`${usernameError ? "border-red-500" : ""}`}
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="email" className="text-white">
+              <FieldLabel htmlFor="email">
                 Email
               </FieldLabel>
               <Input
@@ -149,11 +149,11 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
                 placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`text-white ${emailError ? "border-red-500" : ""}`}
+                className={`${emailError ? "border-red-500" : ""}`}
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password" className="text-white">
+              <FieldLabel htmlFor="password">
                 Password
               </FieldLabel>
               <Input
@@ -161,7 +161,7 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`text-white ${passwordError ? "border-red-500" : ""}`}
+                className={`${passwordError ? "border-red-500" : ""}`}
               />
             </Field>
             <FieldGroup>
