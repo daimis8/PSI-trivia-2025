@@ -451,7 +451,6 @@ function RouteComponent() {
                         Min: 5 seconds, Max: 5 minutes (300 seconds)
                       </p>
 
-                      {/* Quick preset buttons */}
                       <div className="flex gap-2 items-center">
                         <p className="text-xs text-muted-foreground mr-1">
                           Quick presets:
