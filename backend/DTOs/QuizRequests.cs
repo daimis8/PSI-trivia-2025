@@ -19,6 +19,7 @@ public class QuizQuestionDto
     public required string QuestionText { get; set; }
     public required List<string> Options { get; set; }
     public required int CorrectOptionIndex { get; set; }
+    public required int TimeLimit { get; set; }
 }
 
 public class QuizResponse

@@ -4,15 +4,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Loader2, Save, ArrowLeft, Plus, Trash2, Check, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  Loader2,
+  Save,
+  ArrowLeft,
+  Plus,
+  Trash2,
+  Check,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+} from "lucide-react";
 import ErrorComponent from "@/components/Error";
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const Route = createFileRoute("/_app/my-quizzes/$quizId")({
@@ -24,6 +29,7 @@ interface Question {
   questionText: string;
   options: string[];
   correctOptionIndex: number;
+  timeLimit: number;
 }
 
 interface Quiz {
@@ -75,18 +81,21 @@ function RouteComponent() {
         body: JSON.stringify({
           Title: title,
           Description: description,
-          Questions: questions.map(q => ({
+          Questions: questions.map((q) => ({
             Id: q.id,
             QuestionText: q.questionText,
             Options: q.options,
             CorrectOptionIndex: q.correctOptionIndex,
+            TimeLimit: q.timeLimit,
           })),
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to update quiz: ${response.statusText}`);
+        throw new Error(
+          errorData.message || `Failed to update quiz: ${response.statusText}`
+        );
       }
 
       return response.json();
@@ -107,10 +116,12 @@ function RouteComponent() {
   const addQuestion = () => {
     setSaveError(null);
     const newQuestion: Question = {
-      id: questions.length > 0 ? Math.max(...questions.map(q => q.id)) + 1 : 1,
+      id:
+        questions.length > 0 ? Math.max(...questions.map((q) => q.id)) + 1 : 1,
       questionText: "",
       options: ["", ""],
       correctOptionIndex: 0,
+      timeLimit: 30, // default
     };
     setQuestions([...questions, newQuestion]);
   };
@@ -120,12 +131,14 @@ function RouteComponent() {
     setQuestions(questions.filter((q) => q.id !== questionId));
   };
 
-  const updateQuestion = (questionId: number, field: keyof Question, value: any) => {
+  const updateQuestion = (
+    questionId: number,
+    field: keyof Question,
+    value: any
+  ) => {
     setSaveError(null);
     setQuestions(
-      questions.map((q) =>
-        q.id === questionId ? { ...q, [field]: value } : q
-      )
+      questions.map((q) => (q.id === questionId ? { ...q, [field]: value } : q))
     );
   };
 
@@ -148,20 +161,30 @@ function RouteComponent() {
           } else if (optionIndex < q.correctOptionIndex) {
             newCorrectIndex = q.correctOptionIndex - 1;
           }
-          return { ...q, options: newOptions, correctOptionIndex: newCorrectIndex };
+          return {
+            ...q,
+            options: newOptions,
+            correctOptionIndex: newCorrectIndex,
+          };
         }
         return q;
       })
     );
   };
 
-  const updateOption = (questionId: number, optionIndex: number, value: string) => {
+  const updateOption = (
+    questionId: number,
+    optionIndex: number,
+    value: string
+  ) => {
     setQuestions(
       questions.map((q) =>
         q.id === questionId
           ? {
               ...q,
-              options: q.options.map((opt, i) => (i === optionIndex ? value : opt)),
+              options: q.options.map((opt, i) =>
+                i === optionIndex ? value : opt
+              ),
             }
           : q
       )
@@ -197,7 +220,11 @@ function RouteComponent() {
           </Button>
           <h1 className="text-4xl font-bold tracking-tight">Edit Quiz</h1>
         </div>
-        <Button onClick={() => updateQuiz()} disabled={isSaving} className="gap-2">
+        <Button
+          onClick={() => updateQuiz()}
+          disabled={isSaving}
+          className="gap-2"
+        >
           {isSaving ? (
             <>
               <Loader2 className="size-4 animate-spin" />
@@ -276,8 +303,14 @@ function RouteComponent() {
           {questions.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center text-muted-foreground">
-                <p className="mb-4">No questions yet. Add your first question to get started.</p>
-                <Button onClick={addQuestion} variant="outline" className="gap-2">
+                <p className="mb-4">
+                  No questions yet. Add your first question to get started.
+                </p>
+                <Button
+                  onClick={addQuestion}
+                  variant="outline"
+                  className="gap-2"
+                >
                   <Plus className="size-4" />
                   Add Question
                 </Button>
@@ -306,7 +339,11 @@ function RouteComponent() {
                     <Input
                       value={question.questionText}
                       onChange={(e) =>
-                        updateQuestion(question.id, "questionText", e.target.value)
+                        updateQuestion(
+                          question.id,
+                          "questionText",
+                          e.target.value
+                        )
                       }
                       placeholder="Enter your question"
                     />
@@ -335,9 +372,15 @@ function RouteComponent() {
                           <input
                             type="radio"
                             name={`question-${question.id}-correct`}
-                            checked={question.correctOptionIndex === optionIndex}
+                            checked={
+                              question.correctOptionIndex === optionIndex
+                            }
                             onChange={() =>
-                              updateQuestion(question.id, "correctOptionIndex", optionIndex)
+                              updateQuestion(
+                                question.id,
+                                "correctOptionIndex",
+                                optionIndex
+                              )
                             }
                             className="shrink-0 w-4 h-4 cursor-pointer"
                           />
@@ -345,7 +388,11 @@ function RouteComponent() {
                             <Input
                               value={option}
                               onChange={(e) =>
-                                updateOption(question.id, optionIndex, e.target.value)
+                                updateOption(
+                                  question.id,
+                                  optionIndex,
+                                  e.target.value
+                                )
                               }
                               placeholder={`Option ${optionIndex + 1}`}
                               className="flex-1"
@@ -358,7 +405,9 @@ function RouteComponent() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => removeOption(question.id, optionIndex)}
+                              onClick={() =>
+                                removeOption(question.id, optionIndex)
+                              }
                               className="shrink-0"
                             >
                               <Trash2 className="size-4 text-destructive" />
@@ -370,6 +419,58 @@ function RouteComponent() {
                     <p className="text-xs text-muted-foreground">
                       Select the radio button next to the correct answer
                     </p>
+                  </div>
+
+                  <div className="space-y-3 pt-4 border-t">
+                    <div className="flex items-center gap-2">
+                      <Clock className="size-4 text-muted-foreground" />
+                      <Label htmlFor={`time-limit-${question.id}`}>
+                        Time Limit
+                      </Label>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id={`time-limit-${question.id}`}
+                          type="number"
+                          min={5}
+                          max={300}
+                          value={question.timeLimit}
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value) || 5;
+                            updateQuestion(question.id, "timeLimit", value);
+                          }}
+                          className="w-24"
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          seconds
+                        </span>
+                      </div>
+                      <p className="text-xs text-amber-600">
+                        Min: 5 seconds, Max: 5 minutes (300 seconds)
+                      </p>
+
+                      {/* Quick preset buttons */}
+                      <div className="flex gap-2 items-center">
+                        <p className="text-xs text-muted-foreground mr-1">
+                          Quick presets:
+                        </p>
+                        {[15, 30, 60, 120, 180].map((seconds) => (
+                          <Button
+                            key={seconds}
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs"
+                            onClick={() =>
+                              updateQuestion(question.id, "timeLimit", seconds)
+                            }
+                          >
+                            {seconds}s
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
