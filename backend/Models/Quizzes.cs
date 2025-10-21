@@ -23,4 +23,6 @@ public class QuizQuestion
     public required List<string> Options { get; set; }
 
     public required int CorrectOptionIndex { get; set; }
+
+    public required int TimeLimit { get; set; }
 }

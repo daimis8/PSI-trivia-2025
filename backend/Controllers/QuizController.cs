@@ -133,7 +133,8 @@ public class QuizController : ControllerBase
                 Id = q.Id,
                 QuestionText = q.QuestionText,
                 Options = q.Options,
-                CorrectOptionIndex = q.CorrectOptionIndex
+                CorrectOptionIndex = q.CorrectOptionIndex,
+                TimeLimit = q.TimeLimit
             }).ToList()
         };
 
@@ -161,7 +162,8 @@ public class QuizController : ControllerBase
                 Id = q.Id,
                 QuestionText = q.QuestionText,
                 Options = q.Options,
-                CorrectOptionIndex = q.CorrectOptionIndex
+                CorrectOptionIndex = q.CorrectOptionIndex,
+                TimeLimit = q.TimeLimit
             }).ToList()
         };
     }

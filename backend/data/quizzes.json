@@ -1,25 +1,39 @@
 {
-  "5": {
-    "ID": 5,
-    "CreatorID": 3,
+  "1": {
+    "ID": 1,
+    "CreatorID": 2,
     "Title": "New Quiz",
     "Description": "",
-    "Questions": []
-  },
-  "3": {
-    "ID": 3,
-    "CreatorID": 3,
-    "Title": "Testing",
-    "Description": "testing",
     "Questions": [
       {
         "Id": 1,
-        "QuestionText": "First Question",
+        "QuestionText": "iwenowqk",
         "Options": [
-          "Correct",
-          "Wrong"
+          "",
+          ""
         ],
-        "CorrectOptionIndex": 1
+        "CorrectOptionIndex": 0,
+        "TimeLimit": 300
+      },
+      {
+        "Id": 2,
+        "QuestionText": "qwjqiuwiqwu",
+        "Options": [
+          "",
+          ""
+        ],
+        "CorrectOptionIndex": 0,
+        "TimeLimit": 30
+      },
+      {
+        "Id": 3,
+        "QuestionText": "ioqwjniqwjkqw",
+        "Options": [
+          "nqwjqkw",
+          ""
+        ],
+        "CorrectOptionIndex": 0,
+        "TimeLimit": 30
       }
     ]
   },
