@@ -57,8 +57,25 @@ public class AuthController : ControllerBase
 
         var newUser = await _userService.AddUserAsync(user);
         
+        var token = _jwtService.GenerateToken(newUser);
+
+        Response.Cookies.Append("authToken", token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false, // for development false
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddHours(1)
+        });
+        
         return Ok(new 
         { 
+            token = token,
+            user = new 
+            {
+                id = newUser.Id,
+                username = newUser.Username,
+                email = newUser.Email
+            },
             message = "Registration successful"
         });
     }
@@ -67,16 +84,16 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Username))
+        if (string.IsNullOrEmpty(request.Identifier) || string.IsNullOrEmpty(request.Password))
         {
-            return BadRequest(new { message = "Email and password are required" });
+            return BadRequest(new { message = "Email/Username and password are required" });
         }
 
-        var user = await _userService.ValidateLoginAsync(request.Email, request.Password, request.Username);
+        var user = await _userService.ValidateLoginAsync(request.Identifier, request.Password);
         
         if (user == null)
         {
-            return Unauthorized(new { message = "Invalid email, password or username" });
+            return Unauthorized(new { message = "Invalid email/username or password" });
         }
 
         var token = _jwtService.GenerateToken(user);

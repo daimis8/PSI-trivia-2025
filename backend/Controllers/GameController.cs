@@ -41,7 +41,7 @@ public class GameController : ControllerBase
         }
 
         var game = _gameService.CreateGame(int.Parse(userId), quiz.ID, quiz.Questions);
-        return Ok(new CreateGameResponse { Code = game.Code });
+        return Ok(new CreateGameResponse(game.Code));
     }
 
     // Check if a game with code exists (no auth required)

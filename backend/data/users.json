@@ -22,5 +22,23 @@
     "Username": "daimonas",
     "Email": "dai@gmail.com",
     "Password": "$2a$11$8xUJEgfTm2yrU.avqhe80OeYd77M.vE4r2f908mWORUa8yviFjCuu"
+  },
+  "nqwjjq@gmail.com": {
+    "Id": 5,
+    "Username": "daimis111",
+    "Email": "nqwjjq@gmail.com",
+    "Password": "$2a$11$YNLC9xMbOM0Vu/D/RFIPdu3ojjUqJEH7R6m7xgkq6606ekYimnSeG"
+  },
+  "12njk1212@gmail.com": {
+    "Id": 6,
+    "Username": "121",
+    "Email": "12njk1212@gmail.com",
+    "Password": "$2a$11$nUk2qiKq2hk6XmgjgEX2uOaGskS.6d1yV4UaTHWM0Qrq1Qy8yQi8G"
+  },
+  "t@test.com": {
+    "Id": 7,
+    "Username": "test",
+    "Email": "t@test.com",
+    "Password": "$2a$11$3r/Z547IkCnXQ5JZICw6b..0gMLfls8bW48/EphVZT39pogwLEO1q"
   }
 }
