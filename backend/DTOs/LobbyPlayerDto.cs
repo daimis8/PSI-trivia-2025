@@ -1,4 +1,8 @@
 namespace backend.DTOs;
 
-public record LobbyPlayerDto(string Username, bool IsHost);
+public class LobbyPlayerDto
+{
+    public required string Username { get; set; }
+    public bool IsHost { get; set; }
+}
 

@@ -29,24 +29,10 @@ public class PlayerAnswerSummary
     public long TimeMs { get; set; }
 }
 
-public class LeaderboardEntry : IComparable<LeaderboardEntry>
+public class LeaderboardEntry
 {
     public required string Username { get; set; }
     public int Score { get; set; }
-
-    public int CompareTo(LeaderboardEntry? other)
-    {
-        if (other == null) return 1;
-        
-        int scoreComparison = other.Score.CompareTo(this.Score);
-        
-        if (scoreComparison == 0)
-        {
-            return string.Compare(this.Username, other.Username, StringComparison.OrdinalIgnoreCase);
-        }
-        
-        return scoreComparison;
-    }
 }
 
 public class Game

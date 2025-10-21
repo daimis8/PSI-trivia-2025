@@ -9,12 +9,12 @@ public class DataStorage<TKey, TValue> where TValue : class where TKey : notnull
     private Dictionary<TKey, TValue> _data;
     private readonly SemaphoreSlim _fileLock = new SemaphoreSlim(1, 1);
 
-    public DataStorage(string fileName, bool writeIndented = true)
+    public DataStorage(string fileName)
     {
         _filePath = Path.Combine(Directory.GetCurrentDirectory(), "data", fileName);
         _jsonOptions = new JsonSerializerOptions 
         { 
-            WriteIndented = writeIndented 
+            WriteIndented = true 
         };
         
         var directory = Path.GetDirectoryName(_filePath);
@@ -35,8 +35,8 @@ public class DataStorage<TKey, TValue> where TValue : class where TKey : notnull
 
         try
         {
-            using var stream = File.OpenRead(_filePath);
-            return JsonSerializer.Deserialize<Dictionary<TKey, TValue>>(stream, _jsonOptions) 
+            var json = File.ReadAllText(_filePath);
+            return JsonSerializer.Deserialize<Dictionary<TKey, TValue>>(json, _jsonOptions) 
                    ?? new Dictionary<TKey, TValue>();
         }
         catch
@@ -50,8 +50,8 @@ public class DataStorage<TKey, TValue> where TValue : class where TKey : notnull
         await _fileLock.WaitAsync();
         try
         {
-            using var stream = File.Create(_filePath);
-            await JsonSerializer.SerializeAsync(stream, _data, _jsonOptions);
+            var json = JsonSerializer.Serialize(_data, _jsonOptions);
+            await File.WriteAllTextAsync(_filePath, json);
         }
         finally
         {

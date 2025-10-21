@@ -1,4 +1,8 @@
 namespace backend.DTOs;
 
-public record LobbyUpdateDto(string Code, List<LobbyPlayerDto> Players);
+public class LobbyUpdateDto
+{
+    public required string Code { get; set; }
+    public required List<LobbyPlayerDto> Players { get; set; }
+}
 

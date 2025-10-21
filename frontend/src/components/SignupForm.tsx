@@ -36,7 +36,7 @@ export function SignupForm() {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [error, setError] = useState("");
-  const { isAuthenticated, isLoading, login } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
@@ -64,9 +64,8 @@ export function SignupForm() {
 
       return response.json();
     },
-    onSuccess: (data) => {
-      login(data.user);
-      navigate({ to: "/" });
+    onSuccess: () => {
+      navigate({ to: "/login" });
     },
     onError: (error: Error) => {
       setError(error.message);
@@ -143,7 +142,9 @@ export function SignupForm() {
         <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="username">Username</FieldLabel>
+              <FieldLabel htmlFor="username">
+                Username
+              </FieldLabel>
               <Input
                 id="username"
                 type="text"
@@ -153,7 +154,9 @@ export function SignupForm() {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email">
+                Email
+              </FieldLabel>
               <Input
                 id="email"
                 type="email"
@@ -164,7 +167,9 @@ export function SignupForm() {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <FieldLabel htmlFor="password">
+                Password
+              </FieldLabel>
               <Input
                 id="password"
                 type="password"
@@ -185,7 +190,7 @@ export function SignupForm() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className={`${confirmPasswordError ? "border-red-500" : ""}`}
+                className={`${confirmPasswordError ? "border-red-500" : ""}`}  
               />
               <FieldDescription>Please confirm your password.</FieldDescription>
             </Field>

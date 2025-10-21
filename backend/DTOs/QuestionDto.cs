@@ -1,4 +1,10 @@
 namespace backend.DTOs;
 
-public record QuestionDto(int Index, string QuestionText, List<string> Options, DateTimeOffset EndsAt);
+public class QuestionDto
+{
+    public required int Index { get; set; }
+    public required string QuestionText { get; set; }
+    public required List<string> Options { get; set; }
+    public required DateTimeOffset EndsAt { get; set; }
+}
 

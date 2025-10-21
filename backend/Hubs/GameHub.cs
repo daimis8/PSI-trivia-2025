@@ -1,7 +1,6 @@
 using backend.DTOs;
 using backend.Models;
 using backend.Services;
-using backend.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
@@ -12,13 +11,11 @@ public class GameHub : Hub
 {
     private readonly GameService _gameService;
     private readonly QuizService _quizService;
-    private readonly IHubContext<GameHub> _hubContext;
 
-    public GameHub(GameService gameService, QuizService quizService, IHubContext<GameHub> hubContext)
+    public GameHub(GameService gameService, QuizService quizService)
     {
         _gameService = gameService;
         _quizService = quizService;
-        _hubContext = hubContext;
     }
 
     private string? GetUserId() => Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -73,8 +70,7 @@ public class GameHub : Hub
             throw new HubException("Game not found");
 
         EnsureHost(game);
-        // Using extension method to check if questions collection is empty
-        if (game.Questions.IsNullOrEmpty())
+        if (!game.Questions.Any())
             throw new HubException("Quiz has no questions");
 
         await StartQuestionInternal(game);
@@ -118,10 +114,6 @@ public class GameHub : Hub
 
         var now = DateTimeOffset.UtcNow;
         if (game.QuestionStartTime == null || game.QuestionEndTime == null)
-            return;
-
-        // Don't accept answers after time is up
-        if (now > game.QuestionEndTime.Value)
             return;
 
         var elapsed = now - game.QuestionStartTime.Value;
@@ -189,108 +181,65 @@ public class GameHub : Hub
             p.AnswerTimeMs = null;
         }
 
-        var q = game.Questions[game.CurrentQuestionIndex];
-        var questionDurationSeconds = q.TimeLimit;
-
         var now = DateTimeOffset.UtcNow;
         game.QuestionStartTime = now;
-        game.QuestionEndTime = now.AddSeconds(questionDurationSeconds);
+        game.QuestionEndTime = now.AddSeconds(game.QuestionDurationSeconds);
 
-        var dto = new QuestionDto(
-            Index: game.CurrentQuestionIndex,
-            QuestionText: q.QuestionText,
-            Options: q.Options,
-            EndsAt: game.QuestionEndTime.Value
-        );
+        var q = game.Questions[game.CurrentQuestionIndex];
+        var dto = new QuestionDto
+        {
+            Index = game.CurrentQuestionIndex,
+            QuestionText = q.QuestionText,
+            Options = q.Options,
+            EndsAt = game.QuestionEndTime.Value
+        };
 
         await Clients.Group(Group(game.Code)).SendAsync("QuestionStarted", dto);
 
-        var hubContext = _hubContext;
-        var groupName = Group(game.Code);
-        
         _ = Task.Run(async () =>
         {
             try
             {
-                await Task.Delay(TimeSpan.FromSeconds(questionDurationSeconds), game.CurrentTimerCts.Token);
-                await EndQuestionWithContext(game, hubContext, groupName);
+                await Task.Delay(TimeSpan.FromSeconds(game.QuestionDurationSeconds), game.CurrentTimerCts.Token);
+                await EndQuestionInternal(game);
             }
-            catch (TaskCanceledException) 
-            { 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in question timer: {ex.Message}");
-            }
+            catch (TaskCanceledException) { }
         });
     }
 
     private async Task EndQuestionInternal(Game game, bool skipped = false)
     {
-        await EndQuestionWithContext(game, _hubContext, Group(game.Code));
-    }
+        if (game.Phase != GamePhase.Question)
+            return;
 
-    private async Task EndQuestionWithContext(Game game, IHubContext<GameHub> hubContext, string groupName)
-    {
-        // Prevent race conditions
-        lock (game)
-        {
-            if (game.Phase != GamePhase.Question)
-                return;
-
-            game.CurrentTimerCts?.Cancel();
-            game.Phase = GamePhase.Leaderboard;
-        }
+        game.CurrentTimerCts?.Cancel();
+        game.Phase = GamePhase.Leaderboard;
 
         var q = game.Questions[game.CurrentQuestionIndex];
-        var questionDurationMs = q.TimeLimit * 1000.0;
-        
-        var answers = game.Players.Values.Select(p => 
+        var answers = game.Players.Values.Select(p => new PlayerAnswerResultDto
         {
-            bool isCorrect = p.HasAnsweredCurrent && 
-                           p.SelectedOptionIndex.HasValue && 
-                           p.SelectedOptionIndex.Value == q.CorrectOptionIndex;
-            
-            int points = 0;
-            if (isCorrect && p.AnswerTimeMs.HasValue && questionDurationMs > 0)
-            {
-                double ratio = 1.0 - (p.AnswerTimeMs.Value / questionDurationMs);
-                points = (int)Math.Round(1000 * Math.Max(0, ratio));
-            }
-            
-            return new PlayerAnswerResultDto(
-                Username: p.Username,
-                Correct: isCorrect,
-                Points: points,
-                TimeMs: p.AnswerTimeMs ?? (long)questionDurationMs
-            );
+            Username = p.Username,
+            Correct = p.SelectedOptionIndex == q.CorrectOptionIndex && p.HasAnsweredCurrent,
+            Points = (p.SelectedOptionIndex == q.CorrectOptionIndex && p.HasAnsweredCurrent && p.AnswerTimeMs.HasValue)
+                ? (int)Math.Round(1000 * Math.Max(0, 1.0 - (p.AnswerTimeMs.Value / (game.QuestionDurationSeconds * 1000.0))))
+                : 0,
+            TimeMs = (long)(p.AnswerTimeMs ?? (game.QuestionDurationSeconds * 1000))
         }).ToList();
 
-        // Create leaderboard and use IComparable<LeaderboardEntry> for sorting
-        var leaderboardEntries = game.Players.Values
-            .Select(p => new LeaderboardEntry 
-            { 
-                Username = p.Username, 
-                Score = p.TotalScore 
-            })
-            .ToList();
-        
-        // Sort using the IComparable implementation (sorts by score desc, then by username)
-        leaderboardEntries.Sort();
-        
-        // Convert to DTOs for response
-        var leaderboard = leaderboardEntries
-            .Select(e => new LeaderboardEntryDto(Username: e.Username, Score: e.Score))
+        var leaderboard = game.Players.Values
+            .OrderByDescending(p => p.TotalScore)
+            .Select(p => new LeaderboardEntryDto { Username = p.Username, Score = p.TotalScore })
             .ToList();
 
-        var endedDto = new QuestionEndedDto(
-            Index: game.CurrentQuestionIndex,
-            CorrectOptionIndex: q.CorrectOptionIndex,
-            Answers: answers,
-            Leaderboard: leaderboard
-        );
+        var endedDto = new QuestionEndedDto
+        {
+            Index = game.CurrentQuestionIndex,
+            CorrectOptionIndex = q.CorrectOptionIndex,
+            Answers = answers,
+            Leaderboard = leaderboard
+        };
 
-        await hubContext.Clients.Group(groupName).SendAsync("QuestionEnded", endedDto);
+        await Clients.Group(Group(game.Code)).SendAsync("QuestionEnded", endedDto);
     }
 
     private void EnsureHost(Game game)
@@ -304,12 +253,13 @@ public class GameHub : Hub
 
     private async Task BroadcastLobby(Game game)
     {
-        var payload = new LobbyUpdateDto(
-            Code: game.Code,
-            Players: game.Players.Values
-                .Select(p => new LobbyPlayerDto(Username: p.Username, IsHost: false))
+        var payload = new LobbyUpdateDto
+        {
+            Code = game.Code,
+            Players = game.Players.Values
+                .Select(p => new LobbyPlayerDto { Username = p.Username, IsHost = false })
                 .ToList()
-        );
+        };
 
         await Clients.Group(Group(game.Code)).SendAsync("LobbyUpdated", payload);
     }

@@ -1,4 +1,7 @@
 namespace backend.DTOs;
 
-public record CreateGameResponse(string Code);
+public class CreateGameResponse
+{
+    public required string Code { get; set; }
+}
 

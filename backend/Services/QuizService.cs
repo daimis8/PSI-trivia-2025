@@ -1,5 +1,4 @@
 using backend.Models;
-using backend.Extensions;
 
 namespace backend.Services;
 
@@ -38,8 +37,7 @@ public class QuizService
     public async Task<Quiz> CreateQuizAsync(Quiz quiz)
     {
         var quizzes = _storage.GetAll().ToList();
-        // Using extension method to check if collection is empty
-        quiz.ID = quizzes.IsNullOrEmpty() ? 1 : quizzes.Max(q => q.ID) + 1;
+        quiz.ID = quizzes.Any() ? quizzes.Max(q => q.ID) + 1 : 1;
         await _storage.SetAsync(quiz.ID, quiz);
         return quiz;
     }

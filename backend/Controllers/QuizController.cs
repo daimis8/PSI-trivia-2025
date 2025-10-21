@@ -157,13 +157,14 @@ public class QuizController : ControllerBase
             CreatorID = quiz.CreatorID,
             Title = quiz.Title,
             Description = quiz.Description,
-            Questions = quiz.Questions.Select(q => new QuizQuestionDto(
-                Id: q.Id,
-                QuestionText: q.QuestionText,
-                Options: q.Options,
-                CorrectOptionIndex: q.CorrectOptionIndex,
-                TimeLimit: q.TimeLimit
-            )).ToList()
+            Questions = quiz.Questions.Select(q => new QuizQuestionDto
+            {
+                Id = q.Id,
+                QuestionText = q.QuestionText,
+                Options = q.Options,
+                CorrectOptionIndex = q.CorrectOptionIndex,
+                TimeLimit = q.TimeLimit
+            }).ToList()
         };
     }
 }

@@ -4,10 +4,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface AlertBoxProps {
   isLogin: boolean;
-  emailError?: string;
-  passwordError?: string;
+  emailError: string;
+  passwordError: string;
   confirmPasswordError?: string;
-  usernameError?: string;
+  usernameError: string;
   serverError?: string;
 }
 

@@ -1,5 +1,4 @@
 using backend.Models;
-using backend.Extensions;
 using System.Text.RegularExpressions;
 
 namespace backend.Services;
@@ -30,7 +29,7 @@ public class UserService
     {
         var users = _storage.GetAll().ToList();
         
-        user.Id = users.IsNullOrEmpty() ? 1 : users.Max(u => u.Id) + 1;
+        user.Id = users.Any() ? users.Max(u => u.Id) + 1 : 1;
         
         await _storage.SetAsync(user.Email, user);
         
@@ -68,15 +67,10 @@ public class UserService
         return false;
     }
 
-    // Validate user login with either email or username
-    public Task<User?> ValidateLoginAsync(string identifier, string password)
+    // Validate user login
+    public Task<User?> ValidateLoginAsync(string email, string password, string username)
     {
-        var user = _storage.Get(identifier);
-        
-        if (user == null)
-        {
-            user = _storage.GetAll().FirstOrDefault(u => u.Username == identifier);
-        }
+        var user = _storage.Get(email);
         
         if (user == null)
         {
@@ -84,6 +78,7 @@ public class UserService
         }
         
         bool isPasswordValid = _passwordService.VerifyPassword(password, user.Password);
+        bool isUsernameValid = IsUsernameValid(username);
         return Task.FromResult(isPasswordValid ? user : null);
     }
 
@@ -95,11 +90,13 @@ public class UserService
     // Update username
     public async Task<(User? user, string? error)> UpdateUsernameAsync(int userId, string newUsername)
     {
+        // Validate username is not empty
         if (string.IsNullOrWhiteSpace(newUsername))
         {
             return (null, "Username cannot be empty");
         }
 
+        // Validate username length
         if (newUsername.Length < 3)
         {
             return (null, "Username must be at least 3 characters long");
@@ -112,6 +109,7 @@ public class UserService
             return (null, "User not found");
         }
 
+        // Check if new username is already taken by another user
         var existingUser = _storage.GetAll().FirstOrDefault(u => u.Username == newUsername && u.Id != userId);
         if (existingUser != null)
         {
@@ -127,11 +125,13 @@ public class UserService
     // Update email
     public async Task<(User? user, string? error)> UpdateEmailAsync(int userId, string newEmail)
     {
+        // Validate email is not empty
         if (string.IsNullOrWhiteSpace(newEmail))
         {
             return (null, "Email cannot be empty");
         }
 
+        // Validate email format
         if (!EmailRegex.IsMatch(newEmail))
         {
             return (null, "Invalid email format");
@@ -144,6 +144,7 @@ public class UserService
             return (null, "User not found");
         }
 
+        // Check if new email is already taken
         var existingUser = _storage.GetAll().FirstOrDefault(u => u.Email == newEmail && u.Id != userId);
         if (existingUser != null)
         {
@@ -153,6 +154,7 @@ public class UserService
         var oldEmail = user.Email;
         user.Email = newEmail;
         
+        // Remove old email key and add new one
         await _storage.RemoveAsync(oldEmail);
         await _storage.SetAsync(newEmail, user);
         
@@ -162,11 +164,13 @@ public class UserService
     // Update password
     public async Task<(bool success, string? error)> UpdatePasswordAsync(int userId, string currentPassword, string newPassword)
     {
+        // Validate new password is not empty
         if (string.IsNullOrWhiteSpace(newPassword))
         {
             return (false, "Password cannot be empty");
         }
 
+        // Validate password length
         if (newPassword.Length < 8)
         {
             return (false, "Password must be at least 8 characters long");
@@ -179,11 +183,13 @@ public class UserService
             return (false, "User not found");
         }
 
+        // Verify current password
         if (!_passwordService.VerifyPassword(currentPassword, user.Password))
         {
             return (false, "Current password is incorrect");
         }
 
+        // Hash and update password
         user.Password = _passwordService.HashPassword(newPassword);
         await _storage.SetAsync(user.Email, user);
         

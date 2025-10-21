@@ -1,4 +1,8 @@
 namespace backend.DTOs;
 
-public record LeaderboardEntryDto(string Username, int Score);
+public class LeaderboardEntryDto
+{
+    public required string Username { get; set; }
+    public int Score { get; set; }
+}
 

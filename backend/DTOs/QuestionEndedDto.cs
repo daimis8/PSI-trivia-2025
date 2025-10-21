@@ -1,4 +1,10 @@
 namespace backend.DTOs;
 
-public record QuestionEndedDto(int Index, int CorrectOptionIndex, List<PlayerAnswerResultDto> Answers, List<LeaderboardEntryDto> Leaderboard);
+public class QuestionEndedDto
+{
+    public required int Index { get; set; }
+    public required int CorrectOptionIndex { get; set; }
+    public required List<PlayerAnswerResultDto> Answers { get; set; }
+    public required List<LeaderboardEntryDto> Leaderboard { get; set; }
+}
 

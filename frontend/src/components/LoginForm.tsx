@@ -18,7 +18,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AlertBox } from "@/components/AlertBox";
-import { validateLoginPassword } from "@/lib/validation";
+import {
+  validateEmail,
+  validateLoginPassword,
+  validateUsername,
+} from "@/lib/validation";
 
 interface LoginFormProps {
   redirectUrl?: string;
@@ -27,9 +31,11 @@ interface LoginFormProps {
 export function LoginForm({ redirectUrl }: LoginFormProps) {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, login } = useAuth();
-  const [identifier, setIdentifier] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [identifierError, setIdentifierError] = useState("");
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
 
@@ -41,8 +47,9 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: {
-      identifier: string;
+      email: string;
       password: string;
+      username: string;
     }) => {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -71,21 +78,19 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
     e.preventDefault();
     setError("");
 
-    let identifierValidation = "";
-    if (!identifier.trim()) {
-      identifierValidation = "Email or username is required";
-    }
-
+    const emailValidation = validateEmail(email);
     const passwordValidation = validateLoginPassword(password);
+    const usernameValidation = validateUsername(username);
 
-    setIdentifierError(identifierValidation);
+    setEmailError(emailValidation);
     setPasswordError(passwordValidation);
+    setUsernameError(usernameValidation);
 
-    if (identifierValidation || passwordValidation) {
+    if (emailValidation || passwordValidation || usernameValidation) {
       return;
     }
 
-    loginMutation.mutate({ identifier, password });
+    loginMutation.mutate({ email, password, username });
   };
 
   if (isLoading) {
@@ -100,40 +105,57 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
     return null;
   }
 
-  const hasErrors = identifierError || passwordError || error;
+  const hasErrors = emailError || passwordError || usernameError || error;
 
   return (
     <Card className="bg-card">
       <CardHeader>
         <CardTitle>Sign in to your account</CardTitle>
         <CardDescription>
-          Enter your email or username and password to sign in
+          Enter your email and password to sign in
         </CardDescription>
       </CardHeader>
       <CardContent>
         {hasErrors && (
           <AlertBox
             isLogin={true}
-            emailError={identifierError}
+            emailError={emailError}
             passwordError={passwordError}
+            usernameError={usernameError}
             serverError={error}
           />
         )}
         <form onSubmit={handleSubmit} noValidate>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="identifier">Email or Username</FieldLabel>
+              <FieldLabel htmlFor="username">
+                Username
+              </FieldLabel>
               <Input
-                id="identifier"
+                id="username"
                 type="text"
-                placeholder="Enter your email or username"
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                className={`${identifierError ? "border-red-500" : ""}`}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className={`${usernameError ? "border-red-500" : ""}`}
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <FieldLabel htmlFor="email">
+                Email
+              </FieldLabel>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`${emailError ? "border-red-500" : ""}`}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="password">
+                Password
+              </FieldLabel>
               <Input
                 id="password"
                 type="password"
