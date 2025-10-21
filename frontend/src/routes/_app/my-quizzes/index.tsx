@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Loader2, PlusCircle, CircleQuestionMark, Edit, Trash2, FileText, ListChecks, AlertTriangle } from "lucide-react";
+import { Loader2, PlusCircle, CircleQuestionMark, Edit, Trash2, FileText, ListChecks, AlertTriangle, Play } from "lucide-react";
 import ErrorComponent from "@/components/Error";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
@@ -30,9 +30,11 @@ function RouteComponent() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [quizToDelete, setQuizToDelete] = useState<any>(null);
+  interface Question { id: number; questionText: string; options: string[]; correctOptionIndex: number }
+  interface MyQuiz { id: number; title: string; description: string; questions: Question[]; creatorID: number }
+  const [quizToDelete, setQuizToDelete] = useState<MyQuiz | null>(null);
 
-	const { isPending, isError, data } = useQuery({
+	const { isPending, isError, data } = useQuery<MyQuiz[]>({
 		queryKey: ["my-quizzes"],
 		queryFn: async () => {
 			const response = await fetch("/api/quizzes/my");
@@ -83,7 +85,23 @@ function RouteComponent() {
     },
   });
 
-  const handleDeleteClick = (quiz: any) => {
+  const { mutate: startGame, isPending: isStarting } = useMutation({
+    mutationFn: async (quizId: number) => {
+      const res = await fetch("/api/games", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quizId }),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to create game");
+      return res.json() as Promise<{ code: string }>;
+    },
+    onSuccess: (data) => {
+      navigate({ to: `/host/${data.code}` });
+    },
+  });
+
+  const handleDeleteClick = (quiz: MyQuiz) => {
     setQuizToDelete(quiz);
     setDeleteDialogOpen(true);
   };
@@ -140,7 +158,7 @@ function RouteComponent() {
         </Empty>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.map((quiz: any) => (
+          {data.map((quiz: MyQuiz) => (
             <Card key={quiz.id} className="hover:shadow-lg transition-shadow duration-300 flex flex-col">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2">
@@ -174,6 +192,16 @@ function RouteComponent() {
                 >
                   <Edit className="size-4" />
                   Edit
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => startGame(quiz.id)}
+                  disabled={isStarting}
+                >
+                  <Play className="size-4" />
+                  {isStarting ? "Starting..." : "Start"}
                 </Button>
                 <Button 
                   variant="destructive" 

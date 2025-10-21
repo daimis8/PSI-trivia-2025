@@ -16,5 +16,17 @@
     "Username": "Test",
     "Email": "test@test.com",
     "Password": "$2a$11$SB80emQOoMWGuR5ReNwgvu/SAKeu2WkEUYYsUuiKQ7R/TZ5uyjRZu"
+  },
+  "contact@devskee.com": {
+    "Id": 4,
+    "Username": "pov",
+    "Email": "contact@devskee.com",
+    "Password": "$2a$11$XRCrfdvNOgQtYWdMFZLw..mOapzjpCj1Z4O5.FhaOX5egPU/v8CSO"
+  },
+  "dev@dev.com": {
+    "Id": 5,
+    "Username": "dev",
+    "Email": "dev@dev.com",
+    "Password": "$2a$11$31lgeJ8QgGYPhWkbKgw9VumYff8RKMeLsbnasn3nRKIyzGSpt7xMC"
   }
 }

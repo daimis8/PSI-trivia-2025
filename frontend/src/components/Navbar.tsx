@@ -10,7 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Home, CircleQuestionMark } from "lucide-react";
+import { User, LogOut, Home, CircleQuestionMark, Play } from "lucide-react";
 
 export function Navbar() {
 	const { isAuthenticated, user, logout } = useAuth();
@@ -78,57 +78,73 @@ export function Navbar() {
 					<div className="flex items-center gap-4">
 						{!isAuthenticated ? (
 							<>
+								<Link to="/play">
+									<Button>
+										<Play />
+										Play
+									</Button>
+								</Link>
 								<Link to="/login">
 									<Button variant="ghost">Login</Button>
 								</Link>
 								<Link to="/register">
-									<Button>Register</Button>
+									<Button variant="outline">Register</Button>
 								</Link>
 							</>
 						) : (
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button
-										variant="ghost"
-										className="flex items-center gap-2 h-auto py-2"
-									>
-										<Avatar className="h-8 w-8">
-											<AvatarFallback className="bg-primary text-primary-foreground">
-												{user?.username
-													? getInitials(user.username)
-													: "U"}
-											</AvatarFallback>
-										</Avatar>
-										<span className="text-sm font-medium">
-											{user?.username}
-										</span>
+							<>
+								<Link to="/play">
+									<Button>
+										<Play />
+										Play
 									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent
-									align="end"
-									className="w-56"
-								>
-									<DropdownMenuLabel>
-										My Account
-									</DropdownMenuLabel>
-									<DropdownMenuSeparator />
-									<DropdownMenuItem
-										onClick={handleViewProfile}
-										className="cursor-pointer"
+								</Link>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button
+											variant="ghost"
+											className="flex items-center gap-2 h-auto py-2"
+										>
+											<Avatar className="h-8 w-8">
+												<AvatarFallback className="bg-primary text-primary-foreground">
+													{user?.username
+														? getInitials(
+																user.username
+															)
+														: "U"}
+												</AvatarFallback>
+											</Avatar>
+											<span className="text-sm font-medium">
+												{user?.username}
+											</span>
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent
+										align="end"
+										className="w-56"
 									>
-										<User className="mr-2 h-4 w-4" />
-										<span>View Profile</span>
-									</DropdownMenuItem>
-									<DropdownMenuSeparator />
-									<DropdownMenuItem
-										onClick={handleLogout}
-										className="cursor-pointer text-red-600 focus:text-red-600"
-									>
-										<LogOut className="mr-2 h-4 w-4" />
-										<span>Logout</span>
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
+										<DropdownMenuLabel>
+											My Account
+										</DropdownMenuLabel>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem
+											onClick={handleViewProfile}
+											className="cursor-pointer"
+										>
+											<User className="mr-2 h-4 w-4" />
+											<span>View Profile</span>
+										</DropdownMenuItem>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem
+											onClick={handleLogout}
+											className="cursor-pointer text-red-600 focus:text-red-600"
+										>
+											<LogOut className="mr-2 h-4 w-4" />
+											<span>Logout</span>
+										</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</>
 						)}
 					</div>
 				</div>

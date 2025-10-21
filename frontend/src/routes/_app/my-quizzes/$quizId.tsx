@@ -120,7 +120,7 @@ function RouteComponent() {
     setQuestions(questions.filter((q) => q.id !== questionId));
   };
 
-  const updateQuestion = (questionId: number, field: keyof Question, value: any) => {
+  const updateQuestion = (questionId: number, field: keyof Question, value: string | number) => {
     setSaveError(null);
     setQuestions(
       questions.map((q) =>
