@@ -4,7 +4,7 @@ export const Route = createFileRoute("/_app")({
 	beforeLoad: ({ context, location }) => {
 		if (!context.auth.isAuthenticated) {
 			throw redirect({
-				to: "/login",
+				to: "/play",
 				search: {
 					redirect: location.href,
 				},

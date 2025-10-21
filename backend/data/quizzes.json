@@ -36,5 +36,39 @@
         "TimeLimit": 30
       }
     ]
+  },
+  "6": {
+    "ID": 6,
+    "CreatorID": 3,
+    "Title": "Testas",
+    "Description": "",
+    "Questions": []
+  },
+  "7": {
+    "ID": 7,
+    "CreatorID": 5,
+    "Title": "Testing",
+    "Description": "Test Quiz",
+    "Questions": [
+      {
+        "Id": 1,
+        "QuestionText": "First Question",
+        "Options": [
+          "Correct",
+          "Wrong"
+        ],
+        "CorrectOptionIndex": 0
+      },
+      {
+        "Id": 2,
+        "QuestionText": "Second",
+        "Options": [
+          "Wrong",
+          "Correct",
+          "Wrong 2"
+        ],
+        "CorrectOptionIndex": 1
+      }
+    ]
   }
 }

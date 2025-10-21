@@ -10,9 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PlayRouteImport } from './routes/play'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as HostCodeRouteImport } from './routes/host/$code'
+import { Route as GameCodeRouteImport } from './routes/game/$code'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppMyQuizzesIndexRouteImport } from './routes/_app/my-quizzes/index'
 import { Route as AppMyQuizzesQuizIdRouteImport } from './routes/_app/my-quizzes/$quizId'
@@ -20,6 +23,11 @@ import { Route as AppMyQuizzesQuizIdRouteImport } from './routes/_app/my-quizzes
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayRoute = PlayRouteImport.update({
+  id: '/play',
+  path: '/play',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -35,6 +43,16 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRouteRoute,
+} as any)
+const HostCodeRoute = HostCodeRouteImport.update({
+  id: '/host/$code',
+  path: '/host/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GameCodeRoute = GameCodeRouteImport.update({
+  id: '/game/$code',
+  path: '/game/$code',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/profile',
@@ -54,16 +72,22 @@ const AppMyQuizzesQuizIdRoute = AppMyQuizzesQuizIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
+  '/play': typeof PlayRoute
   '/register': typeof RegisterRoute
   '/profile': typeof AppProfileRoute
+  '/game/$code': typeof GameCodeRoute
+  '/host/$code': typeof HostCodeRoute
   '/': typeof AppIndexRoute
   '/my-quizzes/$quizId': typeof AppMyQuizzesQuizIdRoute
   '/my-quizzes': typeof AppMyQuizzesIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/play': typeof PlayRoute
   '/register': typeof RegisterRoute
   '/profile': typeof AppProfileRoute
+  '/game/$code': typeof GameCodeRoute
+  '/host/$code': typeof HostCodeRoute
   '/': typeof AppIndexRoute
   '/my-quizzes/$quizId': typeof AppMyQuizzesQuizIdRoute
   '/my-quizzes': typeof AppMyQuizzesIndexRoute
@@ -72,8 +96,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/play': typeof PlayRoute
   '/register': typeof RegisterRoute
   '/_app/profile': typeof AppProfileRoute
+  '/game/$code': typeof GameCodeRoute
+  '/host/$code': typeof HostCodeRoute
   '/_app/': typeof AppIndexRoute
   '/_app/my-quizzes/$quizId': typeof AppMyQuizzesQuizIdRoute
   '/_app/my-quizzes/': typeof AppMyQuizzesIndexRoute
@@ -82,16 +109,22 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/login'
+    | '/play'
     | '/register'
     | '/profile'
+    | '/game/$code'
+    | '/host/$code'
     | '/'
     | '/my-quizzes/$quizId'
     | '/my-quizzes'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/play'
     | '/register'
     | '/profile'
+    | '/game/$code'
+    | '/host/$code'
     | '/'
     | '/my-quizzes/$quizId'
     | '/my-quizzes'
@@ -99,8 +132,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/login'
+    | '/play'
     | '/register'
     | '/_app/profile'
+    | '/game/$code'
+    | '/host/$code'
     | '/_app/'
     | '/_app/my-quizzes/$quizId'
     | '/_app/my-quizzes/'
@@ -109,7 +145,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRouteRoute: typeof AppRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  PlayRoute: typeof PlayRoute
   RegisterRoute: typeof RegisterRoute
+  GameCodeRoute: typeof GameCodeRoute
+  HostCodeRoute: typeof HostCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -119,6 +158,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play': {
+      id: '/play'
+      path: '/play'
+      fullPath: '/play'
+      preLoaderRoute: typeof PlayRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -141,6 +187,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRouteRoute
+    }
+    '/host/$code': {
+      id: '/host/$code'
+      path: '/host/$code'
+      fullPath: '/host/$code'
+      preLoaderRoute: typeof HostCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/game/$code': {
+      id: '/game/$code'
+      path: '/game/$code'
+      fullPath: '/game/$code'
+      preLoaderRoute: typeof GameCodeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/profile': {
       id: '/_app/profile'
@@ -187,7 +247,10 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AppRouteRoute: AppRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  PlayRoute: PlayRoute,
   RegisterRoute: RegisterRoute,
+  GameCodeRoute: GameCodeRoute,
+  HostCodeRoute: HostCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
