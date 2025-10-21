@@ -16,5 +16,11 @@
     "Username": "Test",
     "Email": "test@test.com",
     "Password": "$2a$11$SB80emQOoMWGuR5ReNwgvu/SAKeu2WkEUYYsUuiKQ7R/TZ5uyjRZu"
+  },
+  "dai@gmail.com": {
+    "Id": 4,
+    "Username": "daimonas",
+    "Email": "dai@gmail.com",
+    "Password": "$2a$11$8xUJEgfTm2yrU.avqhe80OeYd77M.vE4r2f908mWORUa8yviFjCuu"
   }
 }
