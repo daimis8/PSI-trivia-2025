@@ -120,26 +120,23 @@ public class GameHub : Hub
         if (game.QuestionStartTime == null || game.QuestionEndTime == null)
             return;
 
-        // Don't accept answers after time is up
         if (now > game.QuestionEndTime.Value)
             return;
 
-        var elapsed = now - game.QuestionStartTime.Value;
-        var total = game.QuestionEndTime.Value - game.QuestionStartTime.Value;
-        if (elapsed < TimeSpan.Zero) elapsed = TimeSpan.Zero;
-        if (elapsed > total) elapsed = total;
-
         var q = game.Questions[game.CurrentQuestionIndex];
         var correct = optionIndex == q.CorrectOptionIndex;
-        var remainingRatio = 1.0 - (elapsed.TotalMilliseconds / total.TotalMilliseconds);
-        if (remainingRatio < 0) remainingRatio = 0;
-        var points = correct ? (int)Math.Round(1000 * remainingRatio) : 0;
+        var scoreResult = ScoreResult.Calculate(
+            correct,
+            now,
+            game.QuestionStartTime.Value,
+            game.QuestionEndTime.Value
+        );
 
         player.HasAnsweredCurrent = true;
         player.SelectedOptionIndex = optionIndex;
-        player.AnswerTimeMs = (long)elapsed.TotalMilliseconds;
-        if (correct)
-            player.TotalScore += points;
+        player.AnswerTimeMs = scoreResult.ElapsedMilliseconds;
+        if (scoreResult.IsCorrect)
+            player.TotalScore += scoreResult.Points;
 
         // If all players have answered, end early
         var allAnswered = game.Players.Values.All(p => p.HasAnsweredCurrent);

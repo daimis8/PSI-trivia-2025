@@ -40,5 +40,11 @@
     "Username": "test",
     "Email": "t@test.com",
     "Password": "$2a$11$3r/Z547IkCnXQ5JZICw6b..0gMLfls8bW48/EphVZT39pogwLEO1q"
+  },
+  "testing@lt.com": {
+    "Id": 8,
+    "Username": "Testas",
+    "Email": "testing@lt.com",
+    "Password": "$2a$11$p4XR7cOVrLJ9YXg7hHHZJeLXOlJYGw/fS/t10ao6h0WyZQ9k6pAie"
   }
 }
