@@ -1,5 +1,7 @@
 using backend.Services;
+using backend.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -22,10 +24,25 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddSingleton<UserService>();
+// Build connection string from environment variables
+var host = Environment.GetEnvironmentVariable("PGSQL_HOST") ?? "localhost";
+var port = Environment.GetEnvironmentVariable("PGSQL_PORT") ?? "5432";
+var database = Environment.GetEnvironmentVariable("PGSQL_DATABASE") ?? "psi_trivia";
+var username = Environment.GetEnvironmentVariable("PGSQL_USERNAME") ?? "postgres";
+var password = Environment.GetEnvironmentVariable("PGSQL_PASSWORD") ?? "postgres";
+
+var connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+
+// Configure DbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString)
+);
+
+// Register services with scoped lifetime (appropriate for DbContext)
+builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<PasswordService>();
-builder.Services.AddSingleton<QuizService>();
+builder.Services.AddScoped<QuizService>();
 builder.Services.AddSingleton<GameService>();
 builder.Services.AddSignalR();
 

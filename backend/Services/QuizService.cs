@@ -1,71 +1,74 @@
 using backend.Models;
-using backend.Extensions;
+using backend.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
 public class QuizService
 {
-    private readonly DataStorage<int, Quiz> _storage;
+    private readonly ApplicationDbContext _context;
 
-    public QuizService()
+    public QuizService(ApplicationDbContext context)
     {
-        _storage = new DataStorage<int, Quiz>("quizzes.json");
+        _context = context;
     }
 
     // Get all quizzes
-    public Task<List<Quiz>> GetAllQuizzesAsync()
+    public async Task<List<Quiz>> GetAllQuizzesAsync()
     {
-        return Task.FromResult(_storage.GetAll().ToList());
+        return await _context.Quizzes.ToListAsync();
     }
 
     // Get quizzes by user ID
-    public Task<List<Quiz>> GetQuizzesByUserIdAsync(string userId)
+    public async Task<List<Quiz>> GetQuizzesByUserIdAsync(string userId)
     {
         if (!int.TryParse(userId, out int creatorId))
         {
-            return Task.FromResult(new List<Quiz>());
+            return new List<Quiz>();
         }
 
-        return Task.FromResult(_storage.GetAll().Where(q => q.CreatorID == creatorId).ToList());
+        return await _context.Quizzes.Where(q => q.CreatorID == creatorId).ToListAsync();
     }
 
-    public Task<Quiz?> GetQuizByIdAsync(int quizId)
+    public async Task<Quiz?> GetQuizByIdAsync(int quizId)
     {
-        var quiz = _storage.GetAll().FirstOrDefault(q => q.ID == quizId);
-        return Task.FromResult(quiz);
+        return await _context.Quizzes.FirstOrDefaultAsync(q => q.ID == quizId);
     }
 
     public async Task<Quiz> CreateQuizAsync(Quiz quiz)
     {
-        var quizzes = _storage.GetAll().ToList();
-        // Using extension method to check if collection is empty
-        quiz.ID = quizzes.IsNullOrEmpty() ? 1 : quizzes.Max(q => q.ID) + 1;
-        await _storage.SetAsync(quiz.ID, quiz);
+        _context.Quizzes.Add(quiz);
+        await _context.SaveChangesAsync();
         return quiz;
     }
 
     public async Task<bool> DeleteQuizAsync(int quizId)
     {
-        var quiz = await GetQuizByIdAsync(quizId);
+        var quiz = await _context.Quizzes.FindAsync(quizId);
         if (quiz == null)
         {
             return false;
         }
 
-        await _storage.RemoveAsync(quizId);
+        _context.Quizzes.Remove(quiz);
+        await _context.SaveChangesAsync();
         return true;
     }
 
     public async Task<Quiz?> UpdateQuizAsync(int quizId, Quiz updatedQuiz)
     {
-        var existingQuiz = await GetQuizByIdAsync(quizId);
+        var existingQuiz = await _context.Quizzes.FindAsync(quizId);
         if (existingQuiz == null)
         {
             return null;
         }
 
-        updatedQuiz.ID = quizId;
-        await _storage.SetAsync(quizId, updatedQuiz);
-        return updatedQuiz;
+        existingQuiz.Title = updatedQuiz.Title;
+        existingQuiz.Description = updatedQuiz.Description;
+        existingQuiz.Questions = updatedQuiz.Questions;
+
+        _context.Quizzes.Update(existingQuiz);
+        await _context.SaveChangesAsync();
+        return existingQuiz;
     }
 }
