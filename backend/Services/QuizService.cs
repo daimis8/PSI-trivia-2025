@@ -1,71 +1,129 @@
+using backend.Data;
 using backend.Models;
-using backend.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
 public class QuizService
 {
-    private readonly DataStorage<int, Quiz> _storage;
+    private readonly AppDbContext _db;
 
-    public QuizService()
+    public QuizService(AppDbContext db)
     {
-        _storage = new DataStorage<int, Quiz>("quizzes.json");
+        _db = db;
     }
 
-    // Get all quizzes
-    public Task<List<Quiz>> GetAllQuizzesAsync()
+    public async Task<List<Quiz>> GetAllQuizzesAsync()
     {
-        return Task.FromResult(_storage.GetAll().ToList());
+        return await _db.Quizzes
+            .Include(q => q.Questions)
+            .AsNoTracking()
+            .OrderBy(q => q.ID)
+            .ToListAsync();
     }
 
-    // Get quizzes by user ID
-    public Task<List<Quiz>> GetQuizzesByUserIdAsync(string userId)
+    public async Task<List<Quiz>> GetQuizzesByUserIdAsync(string userId)
     {
-        if (!int.TryParse(userId, out int creatorId))
+        if (!int.TryParse(userId, out var creatorId))
         {
-            return Task.FromResult(new List<Quiz>());
+            return new List<Quiz>();
         }
 
-        return Task.FromResult(_storage.GetAll().Where(q => q.CreatorID == creatorId).ToList());
+        return await _db.Quizzes
+            .Include(q => q.Questions)
+            .Where(q => q.CreatorID == creatorId)
+            .AsNoTracking()
+            .OrderBy(q => q.ID)
+            .ToListAsync();
     }
 
-    public Task<Quiz?> GetQuizByIdAsync(int quizId)
+    public async Task<Quiz?> GetQuizByIdAsync(int quizId)
     {
-        var quiz = _storage.GetAll().FirstOrDefault(q => q.ID == quizId);
-        return Task.FromResult(quiz);
+        return await _db.Quizzes
+            .Include(q => q.Questions)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(q => q.ID == quizId);
     }
 
     public async Task<Quiz> CreateQuizAsync(Quiz quiz)
     {
-        var quizzes = _storage.GetAll().ToList();
-        // Using extension method to check if collection is empty
-        quiz.ID = quizzes.IsNullOrEmpty() ? 1 : quizzes.Max(q => q.ID) + 1;
-        await _storage.SetAsync(quiz.ID, quiz);
+        await _db.Quizzes.AddAsync(quiz);
+        await _db.SaveChangesAsync();
         return quiz;
     }
 
     public async Task<bool> DeleteQuizAsync(int quizId)
     {
-        var quiz = await GetQuizByIdAsync(quizId);
+        var quiz = await _db.Quizzes.FirstOrDefaultAsync(q => q.ID == quizId);
         if (quiz == null)
         {
             return false;
         }
 
-        await _storage.RemoveAsync(quizId);
+        _db.Quizzes.Remove(quiz);
+        await _db.SaveChangesAsync();
         return true;
     }
 
     public async Task<Quiz?> UpdateQuizAsync(int quizId, Quiz updatedQuiz)
     {
-        var existingQuiz = await GetQuizByIdAsync(quizId);
-        if (existingQuiz == null)
+        var quiz = await _db.Quizzes
+            .Include(q => q.Questions)
+            .FirstOrDefaultAsync(q => q.ID == quizId);
+
+        if (quiz == null)
         {
             return null;
         }
 
-        updatedQuiz.ID = quizId;
-        await _storage.SetAsync(quizId, updatedQuiz);
-        return updatedQuiz;
+        quiz.Title = updatedQuiz.Title;
+        quiz.Description = updatedQuiz.Description;
+
+        var incomingIds = updatedQuiz.Questions
+            .Where(q => q.Id > 0)
+            .Select(q => q.Id)
+            .ToHashSet();
+
+        var toRemove = quiz.Questions
+            .Where(q => !incomingIds.Contains(q.Id))
+            .ToList();
+
+        if (toRemove.Count > 0)
+        {
+            _db.QuizQuestions.RemoveRange(toRemove);
+            foreach (var remove in toRemove)
+            {
+                quiz.Questions.Remove(remove);
+            }
+        }
+
+        foreach (var question in updatedQuiz.Questions)
+        {
+            var options = question.Options?.ToList() ?? new List<string>();
+
+            if (question.Id > 0)
+            {
+                var existing = quiz.Questions.FirstOrDefault(q => q.Id == question.Id);
+                if (existing != null)
+                {
+                    existing.QuestionText = question.QuestionText;
+                    existing.Options = options;
+                    existing.CorrectOptionIndex = question.CorrectOptionIndex;
+                    existing.TimeLimit = question.TimeLimit;
+                    continue;
+                }
+            }
+
+            quiz.Questions.Add(new QuizQuestion
+            {
+                QuestionText = question.QuestionText,
+                Options = options,
+                CorrectOptionIndex = question.CorrectOptionIndex,
+                TimeLimit = question.TimeLimit
+            });
+        }
+
+        await _db.SaveChangesAsync();
+        return quiz;
     }
 }
