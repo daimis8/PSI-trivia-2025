@@ -328,3 +328,18 @@
   }
 }
 ---
+{
+  "Timestamp": "2025-11-18T19:50:00.6204290\u002B00:00",
+  "ExceptionType": "QuizValidationException",
+  "Message": "Question #1: Option #1 cannot be empty.",
+  "StackTrace": "   at backend.Services.QuizService.ValidateQuiz(Quiz quiz) in /Users/daimis/Programing/PSI/PSI-trivia-2025/backend/Services/QuizService.cs:line 106\n   at backend.Services.QuizService.UpdateQuizAsync(Int32 quizId, Quiz updatedQuiz) in /Users/daimis/Programing/PSI/PSI-trivia-2025/backend/Services/QuizService.cs:line 185\n   at backend.Controllers.QuizController.Update(Int32 id, UpdateQuizRequest request) in /Users/daimis/Programing/PSI/PSI-trivia-2025/backend/Controllers/QuizController.cs:line 141\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.\u003CInvokeActionMethodAsync\u003Eg__Awaited|12_0(ControllerActionInvoker invoker, ValueTask\u00601 actionResultValueTask)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.\u003CInvokeNextActionFilterAsync\u003Eg__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State\u0026 next, Scope\u0026 scope, Object\u0026 state, Boolean\u0026 isCompleted)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.\u003CInvokeInnerFilterAsync\u003Eg__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.\u003CInvokeFilterPipelineAsync\u003Eg__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.\u003CInvokeAsync\u003Eg__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.\u003CInvokeAsync\u003Eg__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)\n   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)\n   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)\n   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)\n   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)\n   at backend.Middleware.ExceptionLoggingMiddleware.InvokeAsync(HttpContext context) in /Users/daimis/Programing/PSI/PSI-trivia-2025/backend/Middleware/ExceptionLoggingMiddleware.cs:line 29",
+  "Path": "/api/quizzes/1",
+  "Method": "PUT",
+  "QueryString": "",
+  "UserId": "daimis",
+  "AdditionalInfo": {
+    "ValidationField": "Questions[0].Options[0]",
+    "InvalidValue": ""
+  }
+}
+---

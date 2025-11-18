@@ -1,7 +1,9 @@
+using backend.Data;
 using backend.Services;
 using backend.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,10 +25,17 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddSingleton<UserService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+    options.UseNpgsql(connectionString);
+});
+
+builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<PasswordService>();
-builder.Services.AddSingleton<QuizService>();
+builder.Services.AddScoped<QuizService>();
 builder.Services.AddSingleton<GameService>();
 builder.Services.AddSignalR();
 
@@ -61,6 +70,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionLoggingMiddleware>();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {
