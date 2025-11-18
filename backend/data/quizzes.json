@@ -72,5 +72,68 @@
         "TimeLimit": 60
       }
     ]
+  },
+  "4": {
+    "ID": 4,
+    "CreatorID": 9,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": [
+      {
+        "Id": 1,
+        "QuestionText": "12h12iuhiu21",
+        "Options": [
+          "21u12h12iu12",
+          ""
+        ],
+        "CorrectOptionIndex": 0,
+        "TimeLimit": 30
+      },
+      {
+        "Id": 2,
+        "QuestionText": "21iuh21bhu12",
+        "Options": [
+          "21jb21jh12iu12",
+          "21n21bhuj12"
+        ],
+        "CorrectOptionIndex": 0,
+        "TimeLimit": 15
+      }
+    ]
+  },
+  "5": {
+    "ID": 5,
+    "CreatorID": 10,
+    "Title": "Pavadinimas",
+    "Description": "ienwinjllq",
+    "Questions": [
+      {
+        "Id": 1,
+        "QuestionText": "1",
+        "Options": [
+          "1",
+          "2"
+        ],
+        "CorrectOptionIndex": 0,
+        "TimeLimit": 60
+      },
+      {
+        "Id": 2,
+        "QuestionText": "2",
+        "Options": [
+          "1",
+          "2"
+        ],
+        "CorrectOptionIndex": 0,
+        "TimeLimit": 15
+      }
+    ]
+  },
+  "6": {
+    "ID": 6,
+    "CreatorID": 11,
+    "Title": "New Quiz",
+    "Description": "",
+    "Questions": []
   }
 }

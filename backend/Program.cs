@@ -1,4 +1,5 @@
 using backend.Services;
+using backend.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -58,6 +59,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionLoggingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

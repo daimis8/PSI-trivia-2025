@@ -40,6 +40,11 @@ public class GameController : ControllerBase
             return Forbid();
         }
 
+        if (quiz.Questions == null || quiz.Questions.Count == 0)
+        {
+            return BadRequest(new { message = "Cannot start a game with a quiz that has no questions" });
+        }
+
         var game = _gameService.CreateGame(int.Parse(userId), quiz.ID, quiz.Questions);
         return Ok(new CreateGameResponse(game.Code));
     }

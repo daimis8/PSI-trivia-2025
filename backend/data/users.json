@@ -46,5 +46,23 @@
     "Username": "Testas",
     "Email": "testing@lt.com",
     "Password": "$2a$11$p4XR7cOVrLJ9YXg7hHHZJeLXOlJYGw/fS/t10ao6h0WyZQ9k6pAie"
+  },
+  "daimonas.jocys@gmail.com": {
+    "Id": 9,
+    "Username": "Daimonas",
+    "Email": "daimonas.jocys@gmail.com",
+    "Password": "$2a$11$tlA6awk7uzkbwKRM.Nu0JuGwbN4pfv99NZAhlHhpiLhWBMlAfuUCu"
+  },
+  "daimonas@gmail.com": {
+    "Id": 10,
+    "Username": "Daimonas123",
+    "Email": "daimonas@gmail.com",
+    "Password": "$2a$11$w9Kaz1omFPWZwOViAjzdpOEid.ik2ujl1/6uG/18IaAt1GIb4xTUC"
+  },
+  "test@gmail.com": {
+    "Id": 11,
+    "Username": "test123",
+    "Email": "test@gmail.com",
+    "Password": "$2a$11$azP08gMBWu24HId.2BQHOOHVNxWRPWblx45H667OcuB1haYU4pdwO"
   }
 }
