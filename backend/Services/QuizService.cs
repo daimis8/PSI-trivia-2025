@@ -68,4 +68,22 @@ public class QuizService
         await _storage.SetAsync(quizId, updatedQuiz);
         return updatedQuiz;
     }
+
+    public async Task<bool> IncrementQuizPlaysAsync(int quizId)
+    {
+        var quiz = await GetQuizByIdAsync(quizId);
+        if (quiz == null)
+        {
+            return false;
+        }
+
+        if (quiz.TimesPlayed < 0)
+        {
+            quiz.TimesPlayed = 0;
+        }
+
+        quiz.TimesPlayed += 1;
+        await _storage.SetAsync(quizId, quiz);
+        return true;
+    }
 }

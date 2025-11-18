@@ -27,6 +27,7 @@ builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<PasswordService>();
 builder.Services.AddSingleton<QuizService>();
 builder.Services.AddSingleton<GameService>();
+builder.Services.AddSingleton<UserStatsService>();
 builder.Services.AddSignalR();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

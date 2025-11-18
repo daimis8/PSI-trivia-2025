@@ -10,6 +10,8 @@ public class Quiz
 
     public required string Description { get; set; }
 
+    public int TimesPlayed { get; set;} = 0;
+
     public required List<QuizQuestion> Questions { get; set; }
 
 }

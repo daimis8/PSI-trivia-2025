@@ -14,6 +14,7 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
+  BarChart3
 } from "lucide-react";
 import ErrorComponent from "@/components/Error";
 import { useState, useEffect } from "react";
@@ -38,6 +39,7 @@ interface Quiz {
   description: string;
   questions: Question[];
   creatorID: number;
+  timesPlayed?: number;
 }
 
 function RouteComponent() {
@@ -219,6 +221,10 @@ function RouteComponent() {
             <ArrowLeft className="size-5" />
           </Button>
           <h1 className="text-4xl font-bold tracking-tight">Edit Quiz</h1>
+          <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+              <BarChart3 className="size-4" />
+              {data.timesPlayed ?? 0} play{(data.timesPlayed ?? 0) === 1 ? "" : "s"}
+          </p>
         </div>
         <Button
           onClick={() => updateQuiz()}

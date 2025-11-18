@@ -68,4 +68,6 @@ public class Game
     public ConcurrentDictionary<string, GamePlayer> Players { get; } = new();
 
     public CancellationTokenSource? CurrentTimerCts { get; set; }
+
+    public bool StatsRecorded { get; set; } = false;
 }

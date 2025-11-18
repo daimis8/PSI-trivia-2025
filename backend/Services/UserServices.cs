@@ -8,15 +8,17 @@ public class UserService
 {
     private readonly DataStorage<string, User> _storage;
     private readonly PasswordService _passwordService;
+    private readonly UserStatsService _userStatsService;
     private static readonly Regex EmailRegex = new Regex(
         @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase
     );
 
-    public UserService(PasswordService passwordService)
+    public UserService(PasswordService passwordService, UserStatsService userStatsService)
     {
         _storage = new DataStorage<string, User>("users.json");
         _passwordService = passwordService;
+        _userStatsService = userStatsService;
     }
 
     // Get all users
@@ -33,6 +35,8 @@ public class UserService
         user.Id = users.IsNullOrEmpty() ? 1 : users.Max(u => u.Id) + 1;
         
         await _storage.SetAsync(user.Email, user);
+
+        await _userStatsService.AddUserStatsAsync(user.Id);
         
         return user;
     }
@@ -63,6 +67,7 @@ public class UserService
         var user = _storage.GetAll().FirstOrDefault(u => u.Id == id);
         if (user != null)
         {
+            await _userStatsService.DeleteUserStatsAsync(id);
             return await _storage.RemoveAsync(user.Email);
         }
         return false;
