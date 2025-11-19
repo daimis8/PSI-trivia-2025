@@ -39,7 +39,7 @@ export function UserStatsPage() {
     const winRate = 
         data.gamesPlayed > 0
         ? ((data.gamesWon / data.gamesPlayed) * 100).toFixed(1)
-        : "0.0%";
+        : "0.0";
 
     return (
         <div className="space-y-8">
@@ -52,11 +52,11 @@ export function UserStatsPage() {
                 </p>
             </header>
 
-            <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 <StatsCard title="Games Played" value={data.gamesPlayed} />
                 <StatsCard title="Games Won" value={data.gamesWon} subtitle={`${winRate}% win rate`} />
                 <StatsCard title="Quizzes Created" value={data.quizzesCreated} />
-                <StatsCard title="Quiz Plays (Total)" value={data.quizPlaysTotal} />
+                <StatsCard title="Quiz Plays (Total)" value={data.quizPlays} />
             </section>
 
             <section className="space-y-4">
@@ -66,7 +66,7 @@ export function UserStatsPage() {
                         label="Average Plays Per Created Quiz"
                         value={
                             data.quizzesCreated > 0
-                            ? (data.quizPlaysTotal / data.quizzesCreated).toFixed(2)
+                            ? (data.quizPlays / data.quizzesCreated).toFixed(2)
                             : "0.00"
                         }
                     />

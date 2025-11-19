@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EditProfileDialog } from "@/components/EditProfileDialog";
 import { PlayCircle, Star, Edit, Loader2 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserStats} from "@/lib/stats";
 import type { UserStats } from "@/lib/stats";
@@ -75,15 +76,17 @@ export function ProfilePage() {
                 Pro quizzer
               </Badge>
 
-              <Button variant="link" className="text-sm p-0 h-auto" onClick={() => (window.location.href = "/routes/_app/stats")}>
-                View full stats →
-              </Button>
+              <Link to="/stats">
+                <Button variant="link" className="text-sm p-0 h-auto">
+                  View full stats →
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
 
         <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <StatCard 
               label="Games PLayed" 
               icon={<PlayCircle className="size-6 text-muted-foreground" />}
