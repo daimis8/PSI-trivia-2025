@@ -1,14 +1,16 @@
 using backend.Models;
+using backend.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
 public class UserStatsService
 {
-    private readonly DataStorage<int, UserStats> _storage;
+    private readonly AppDbContext _db;
 
-    public UserStatsService()
+    public UserStatsService(AppDbContext db)
     {
-        _storage = new DataStorage<int, UserStats>("userStats.json");
+        _db = db;
     }
 
     // Add stats for a new user
@@ -22,21 +24,21 @@ public class UserStatsService
             QuizzesCreated = 0,
             QuizPlays = 0
         };
-        await _storage.SetAsync(userId, stats);
+        await _db.UserStats.AddAsync(stats);
+        await _db.SaveChangesAsync();
         return stats;
     }
     
     // Get stats for a user
-    public Task<UserStats?> GetUserStatsAsync(int userId)
+    public async Task<UserStats?> GetUserStatsAsync(int userId)
     {
-        var stats = _storage.Get(userId);
-        return Task.FromResult(stats);
+        return await _db.UserStats.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
     }
 
     // Ensure user's stats exist
     public async Task<UserStats> EnsureAsync(int userId)
     {
-        var stats = _storage.Get(userId);
+        var stats = await _db.UserStats.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == userId);
         if (stats == null)
         {
             stats = await AddUserStatsAsync(userId);
@@ -53,7 +55,7 @@ public class UserStatsService
         {
             stats.GamesWon += 1;
         }
-        await _storage.SetAsync(userId, stats);
+        await _db.SaveChangesAsync();
     }
 
     // Increase or decrease No. of quizzes created by a user
@@ -65,7 +67,7 @@ public class UserStatsService
         {
             stats.QuizzesCreated = 0;
         }
-        await _storage.SetAsync(userId, stats);
+        await _db.SaveChangesAsync();
     }
 
     // Increment No. of times a quiz has been played
@@ -73,7 +75,7 @@ public class UserStatsService
     {
         var stats = await EnsureAsync(userId);
         stats.QuizPlays += 1;
-        await _storage.SetAsync(userId, stats);
+        await _db.SaveChangesAsync();
     }
 
     // Record play/win stats for users
@@ -89,6 +91,14 @@ public class UserStatsService
     // Delete user stats
     public async Task<bool> DeleteUserStatsAsync(int userId)
     {
-        return await _storage.RemoveAsync(userId);
+        var stats = await _db.UserStats.FirstOrDefaultAsync(s => s.UserId == userId);
+        if (stats == null)
+        {
+            return false;
+        }
+
+        _db.UserStats.Remove(stats);
+        await _db.SaveChangesAsync();
+        return true;
     }
 }

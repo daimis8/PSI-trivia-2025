@@ -1,12 +1,13 @@
-using backend.Models;
-using backend.Extensions;
 using System.Text.RegularExpressions;
+using backend.Data;
+using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
 public class UserService
 {
-    private readonly DataStorage<string, User> _storage;
+    private readonly AppDbContext _db;
     private readonly PasswordService _passwordService;
     private readonly UserStatsService _userStatsService;
     private static readonly Regex EmailRegex = new Regex(
@@ -14,27 +15,24 @@ public class UserService
         RegexOptions.Compiled | RegexOptions.IgnoreCase
     );
 
-    public UserService(PasswordService passwordService, UserStatsService userStatsService)
+    public UserService(AppDbContext db, PasswordService passwordService, UserStatsService userStatsService)
     {
-        _storage = new DataStorage<string, User>("users.json");
+        _db = db;
         _passwordService = passwordService;
         _userStatsService = userStatsService;
     }
 
     // Get all users
-    public Task<List<User>> GetAllUsersAsync()
+    public async Task<List<User>> GetAllUsersAsync()
     {
-        return Task.FromResult(_storage.GetAll().ToList());
+        return await _db.Users.AsNoTracking().ToListAsync();
     }
 
     // Add a new user
     public async Task<User> AddUserAsync(User user)
     {
-        var users = _storage.GetAll().ToList();
-        
-        user.Id = users.IsNullOrEmpty() ? 1 : users.Max(u => u.Id) + 1;
-        
-        await _storage.SetAsync(user.Email, user);
+        await _db.Users.AddAsync(user);
+        await _db.SaveChangesAsync();
 
         await _userStatsService.AddUserStatsAsync(user.Id);
         
@@ -42,59 +40,58 @@ public class UserService
     }
 
     // Get user by email
-    public Task<User?> GetUserByEmailAsync(string email)
+    public async Task<User?> GetUserByEmailAsync(string email)
     {
-        var user = _storage.Get(email);
-        return Task.FromResult(user);
+        return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
     }
 
     // Get user by ID
-    public Task<User?> GetUserByIdAsync(int id)
+    public async Task<User?> GetUserByIdAsync(int id)
     {
-        var user = _storage.GetAll().FirstOrDefault(u => u.Id == id);
-        return Task.FromResult(user);
+        return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
     }
     // Get user by username
-    public Task<User?> GetUserByUsernameAsync(string username)
+    public async Task<User?> GetUserByUsernameAsync(string username)
     {
-        var user = _storage.GetAll().FirstOrDefault(u => u.Username == username);
-        return Task.FromResult(user);
+        return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username);
     }
 
     // Delete user by ID
     public async Task<bool> DeleteUserAsync(int id)
     {
-        var user = _storage.GetAll().FirstOrDefault(u => u.Id == id);
-        if (user != null)
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user == null)
         {
-            await _userStatsService.DeleteUserStatsAsync(id);
-            return await _storage.RemoveAsync(user.Email);
+            return false;
         }
-        return false;
+
+        await _userStatsService.DeleteUserStatsAsync(id);
+        _db.Users.Remove(user);
+        await _db.SaveChangesAsync();
+        return true;
     }
 
     // Validate user login with either email or username
-    public Task<User?> ValidateLoginAsync(string identifier, string password)
+    public async Task<User?> ValidateLoginAsync(string identifier, string password)
     {
-        var user = _storage.Get(identifier);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == identifier);
         
         if (user == null)
         {
-            user = _storage.GetAll().FirstOrDefault(u => u.Username == identifier);
+            user = await _db.Users.FirstOrDefaultAsync(u => u.Username == identifier);
         }
         
         if (user == null)
         {
-            return Task.FromResult<User?>(null);
+            return null;
         }
         
-        bool isPasswordValid = _passwordService.VerifyPassword(password, user.Password);
-        return Task.FromResult(isPasswordValid ? user : null);
+        return _passwordService.VerifyPassword(password, user.Password) ? user : null;
     }
 
     public bool IsUsernameValid(string username)
     {
-        return _storage.GetAll().Any(u => u.Username == username);
+        return _db.Users.Any(u => u.Username == username);
     }
 
     // Update username
@@ -110,21 +107,21 @@ public class UserService
             return (null, "Username must be at least 3 characters long");
         }
 
-        var user = _storage.GetAll().FirstOrDefault(u => u.Id == userId);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
         
         if (user == null)
         {
             return (null, "User not found");
         }
 
-        var existingUser = _storage.GetAll().FirstOrDefault(u => u.Username == newUsername && u.Id != userId);
-        if (existingUser != null)
+        var exists = await _db.Users.AnyAsync(u => u.Username == newUsername && u.Id != userId);
+        if (exists)
         {
             return (null, "Username already taken");
         }
 
         user.Username = newUsername;
-        await _storage.SetAsync(user.Email, user);
+        await _db.SaveChangesAsync();
         
         return (user, null);
     }
@@ -142,24 +139,22 @@ public class UserService
             return (null, "Invalid email format");
         }
 
-        var user = _storage.GetAll().FirstOrDefault(u => u.Id == userId);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
         
         if (user == null)
         {
             return (null, "User not found");
         }
 
-        var existingUser = _storage.GetAll().FirstOrDefault(u => u.Email == newEmail && u.Id != userId);
-        if (existingUser != null)
+        var exists = await _db.Users.AnyAsync(u => u.Email == newEmail && u.Id != userId);
+        if (exists)
         {
             return (null, "Email already taken");
         }
 
-        var oldEmail = user.Email;
         user.Email = newEmail;
         
-        await _storage.RemoveAsync(oldEmail);
-        await _storage.SetAsync(newEmail, user);
+        await _db.SaveChangesAsync();
         
         return (user, null);
     }
@@ -177,7 +172,7 @@ public class UserService
             return (false, "Password must be at least 8 characters long");
         }
 
-        var user = _storage.GetAll().FirstOrDefault(u => u.Id == userId);
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
         
         if (user == null)
         {
@@ -190,7 +185,7 @@ public class UserService
         }
 
         user.Password = _passwordService.HashPassword(newPassword);
-        await _storage.SetAsync(user.Email, user);
+        await _db.SaveChangesAsync();
         
         return (true, null);
     }

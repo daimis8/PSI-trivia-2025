@@ -1,18 +1,20 @@
+using System.Text.Json.Serialization;
+
 namespace backend.Models;
 
 public class Quiz
 {
     public int ID { get; set; }
 
-    public required int CreatorID { get; set; }
+    public int CreatorID { get; set; }
 
-    public required string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
-    public required string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     public int TimesPlayed { get; set;} = 0;
 
-    public required List<QuizQuestion> Questions { get; set; }
+    public List<QuizQuestion> Questions { get; set; } = new();
 
 }
 
@@ -20,11 +22,17 @@ public class QuizQuestion
 {
     public int Id { get; set; }
 
-    public required string QuestionText { get; set; }
+    public string QuestionText { get; set; } = string.Empty;
 
-    public required List<string> Options { get; set; }
+    public List<string> Options { get; set; } = new();
 
-    public required int CorrectOptionIndex { get; set; }
+    public int CorrectOptionIndex { get; set; }
 
-    public required int TimeLimit { get; set; }
+    public int TimeLimit { get; set; }
+
+    [JsonIgnore]
+    public int QuizId { get; set; }
+
+    [JsonIgnore]
+    public Quiz? Quiz { get; set; }
 }
