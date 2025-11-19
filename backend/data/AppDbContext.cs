@@ -58,10 +58,10 @@ public class AppDbContext : DbContext
             //     .HasForeignKey(q => q.CreatorID)
             //     .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasMany(q => q.Questions)
-                .WithOne(q => q.Quiz)
-                .HasForeignKey(q => q.QuizId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // entity.HasMany(q => q.Questions)
+            //     .WithOne(q => q.Quiz)
+            //     .HasForeignKey(q => q.QuizId)
+            //     .OnDelete(DeleteBehavior.Cascade);
         });
     }
 
