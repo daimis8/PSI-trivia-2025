@@ -13,7 +13,6 @@ public class QuizService
         _db = db;
     }
 
-    // Get all quizzes
     public async Task<List<Quiz>> GetAllQuizzesAsync()
     {
         return await _db.Quizzes
@@ -23,7 +22,6 @@ public class QuizService
             .ToListAsync();
     }
 
-    // Get quizzes by user ID
     public async Task<List<Quiz>> GetQuizzesByUserIdAsync(string userId)
     {
         if (!int.TryParse(userId, out var creatorId))

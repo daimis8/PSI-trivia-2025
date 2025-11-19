@@ -22,13 +22,11 @@ public class UserService
         _userStatsService = userStatsService;
     }
 
-    // Get all users
     public async Task<List<User>> GetAllUsersAsync()
     {
         return await _db.Users.AsNoTracking().ToListAsync();
     }
 
-    // Add a new user
     public async Task<User> AddUserAsync(User user)
     {
         await _db.Users.AddAsync(user);
@@ -45,18 +43,16 @@ public class UserService
         return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    // Get user by ID
     public async Task<User?> GetUserByIdAsync(int id)
     {
         return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
     }
-    // Get user by username
+
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
         return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username);
     }
 
-    // Delete user by ID
     public async Task<bool> DeleteUserAsync(int id)
     {
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
@@ -71,21 +67,20 @@ public class UserService
         return true;
     }
 
-    // Validate user login with either email or username
     public async Task<User?> ValidateLoginAsync(string identifier, string password)
     {
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == identifier);
-        
+
         if (user == null)
         {
             user = await _db.Users.FirstOrDefaultAsync(u => u.Username == identifier);
         }
-        
+
         if (user == null)
         {
             return null;
         }
-        
+
         return _passwordService.VerifyPassword(password, user.Password) ? user : null;
     }
 
@@ -94,7 +89,6 @@ public class UserService
         return _db.Users.Any(u => u.Username == username);
     }
 
-    // Update username
     public async Task<(User? user, string? error)> UpdateUsernameAsync(int userId, string newUsername)
     {
         if (string.IsNullOrWhiteSpace(newUsername))
@@ -108,7 +102,7 @@ public class UserService
         }
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        
+
         if (user == null)
         {
             return (null, "User not found");
@@ -122,11 +116,10 @@ public class UserService
 
         user.Username = newUsername;
         await _db.SaveChangesAsync();
-        
+
         return (user, null);
     }
 
-    // Update email
     public async Task<(User? user, string? error)> UpdateEmailAsync(int userId, string newEmail)
     {
         if (string.IsNullOrWhiteSpace(newEmail))
@@ -140,7 +133,7 @@ public class UserService
         }
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        
+
         if (user == null)
         {
             return (null, "User not found");
@@ -153,13 +146,11 @@ public class UserService
         }
 
         user.Email = newEmail;
-        
         await _db.SaveChangesAsync();
-        
+
         return (user, null);
     }
 
-    // Update password
     public async Task<(bool success, string? error)> UpdatePasswordAsync(int userId, string currentPassword, string newPassword)
     {
         if (string.IsNullOrWhiteSpace(newPassword))
@@ -173,7 +164,7 @@ public class UserService
         }
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        
+
         if (user == null)
         {
             return (false, "User not found");
@@ -186,7 +177,7 @@ public class UserService
 
         user.Password = _passwordService.HashPassword(newPassword);
         await _db.SaveChangesAsync();
-        
+
         return (true, null);
     }
 }
