@@ -7,3 +7,5 @@ frontend/dist/
 
 .env
 .DS_Store
+
+backend/appsettings.Development.json

@@ -1,5 +1,7 @@
 using backend.Data;
 using backend.Models;
+using backend.Extensions;
+using backend.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
@@ -13,6 +15,106 @@ public class QuizService
         _db = db;
     }
 
+    private void ValidateQuiz(Quiz quiz)
+    {
+        // Validate title
+        if (string.IsNullOrWhiteSpace(quiz.Title))
+        {
+            throw new QuizValidationException(
+                "Quiz title cannot be empty or whitespace.",
+                nameof(quiz.Title),
+                quiz.Title
+            );
+        }
+
+        if (quiz.Title.Length > 100)
+        {
+            throw new QuizValidationException(
+                "Quiz title cannot exceed 100 characters.",
+                nameof(quiz.Title),
+                quiz.Title.Length
+            );
+        }
+
+        // Validate questions (allow empty quizzes for initial creation)
+        if (quiz.Questions != null && quiz.Questions.Count > 0)
+        {
+            if (quiz.Questions.Count > 50)
+            {
+                throw new QuizValidationException(
+                    "Quiz cannot have more than 50 questions.",
+                    nameof(quiz.Questions),
+                    quiz.Questions.Count
+                );
+            }
+
+            // Validate each question
+            for (int i = 0; i < quiz.Questions.Count; i++)
+            {
+                var question = quiz.Questions[i];
+
+                if (string.IsNullOrWhiteSpace(question.QuestionText))
+                {
+                    throw new QuizValidationException(
+                        $"Question #{i + 1}: Question text cannot be empty.",
+                        $"Questions[{i}].QuestionText",
+                        question.QuestionText
+                    );
+                }
+
+                if (question.Options == null || question.Options.Count < 2)
+                {
+                    throw new QuizValidationException(
+                        $"Question #{i + 1}: Must have at least 2 options.",
+                        $"Questions[{i}].Options",
+                        question.Options?.Count ?? 0
+                    );
+                }
+
+                if (question.Options.Count > 6)
+                {
+                    throw new QuizValidationException(
+                        $"Question #{i + 1}: Cannot have more than 6 options.",
+                        $"Questions[{i}].Options",
+                        question.Options.Count
+                    );
+                }
+
+                if (question.CorrectOptionIndex < 0 || question.CorrectOptionIndex >= question.Options.Count)
+                {
+                    throw new QuizValidationException(
+                        $"Question #{i + 1}: Correct option index {question.CorrectOptionIndex} is out of range (0-{question.Options.Count - 1}).",
+                        $"Questions[{i}].CorrectOptionIndex",
+                        question.CorrectOptionIndex
+                    );
+                }
+
+                if (question.TimeLimit < 5 || question.TimeLimit > 120)
+                {
+                    throw new QuizValidationException(
+                        $"Question #{i + 1}: Time limit must be between 5 and 120 seconds.",
+                        $"Questions[{i}].TimeLimit",
+                        question.TimeLimit
+                    );
+                }
+
+                // Check for empty options
+                for (int j = 0; j < question.Options.Count; j++)
+                {
+                    if (string.IsNullOrWhiteSpace(question.Options[j]))
+                    {
+                        throw new QuizValidationException(
+                            $"Question #{i + 1}: Option #{j + 1} cannot be empty.",
+                            $"Questions[{i}].Options[{j}]",
+                            question.Options[j]
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    // Get all quizzes
     public async Task<List<Quiz>> GetAllQuizzesAsync()
     {
         return await _db.Quizzes
@@ -47,6 +149,9 @@ public class QuizService
 
     public async Task<Quiz> CreateQuizAsync(Quiz quiz)
     {
+        // Validate quiz before creating
+        ValidateQuiz(quiz);
+        
         await _db.Quizzes.AddAsync(quiz);
         await _db.SaveChangesAsync();
         return quiz;
@@ -75,6 +180,9 @@ public class QuizService
         {
             return null;
         }
+
+        // Validate quiz before updating
+        ValidateQuiz(updatedQuiz);
 
         quiz.Title = updatedQuiz.Title;
         quiz.Description = updatedQuiz.Description;
