@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EditProfileDialog } from "@/components/EditProfileDialog";
@@ -25,21 +25,6 @@ export function ProfilePage() {
     queryFn: () => fetchUserStats(user!.id),
     staleTime: 60 * 1000,
   });
-
-  const activities = [
-    {
-      title: 'Completed quiz "Quiz 1"',
-      time: "2 hours ago",
-    },
-    {
-      title: 'Completed quiz "Quiz 2"',
-      time: "2 hours ago",
-    },
-    {
-      title: 'Completed quiz "Quiz 3"',
-      time: "2 hours ago",
-    },
-  ];
 
   return (
     <>
@@ -103,30 +88,6 @@ export function ProfilePage() {
               }
             />
           </div>
-          <Card className="bg-card-dark">
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {activities.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="bg-card-darker p-2 rounded-lg mt-1">
-                      <Star className="size-5 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium mb-1">
-                        {activity.title}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {activity.time}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
 
