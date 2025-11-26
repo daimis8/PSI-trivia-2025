@@ -9,15 +9,17 @@ public class UserService
 {
     private readonly AppDbContext _db;
     private readonly PasswordService _passwordService;
+    private readonly UserStatsService _userStatsService;
     private static readonly Regex EmailRegex = new Regex(
         @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase
     );
 
-    public UserService(AppDbContext db, PasswordService passwordService)
+    public UserService(AppDbContext db, PasswordService passwordService, UserStatsService userStatsService)
     {
         _db = db;
         _passwordService = passwordService;
+        _userStatsService = userStatsService;
     }
 
     public async Task<List<User>> GetAllUsersAsync()
@@ -29,6 +31,9 @@ public class UserService
     {
         await _db.Users.AddAsync(user);
         await _db.SaveChangesAsync();
+
+        await _userStatsService.AddUserStatsAsync(user.Id);
+
         return user;
     }
 
@@ -55,6 +60,7 @@ public class UserService
             return false;
         }
 
+        await _userStatsService.DeleteUserStatsAsync(id);
         _db.Users.Remove(user);
         await _db.SaveChangesAsync();
         return true;

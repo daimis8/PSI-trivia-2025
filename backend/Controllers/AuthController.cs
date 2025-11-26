@@ -59,7 +59,7 @@ public class AuthController : ControllerBase
         
         var token = _jwtService.GenerateToken(newUser);
 
-        Response.Cookies.Append("authToken", token, new CookieOptions
+        Response.Cookies.Append("authToken'", token, new CookieOptions
         {
             HttpOnly = true,
             Secure = false, // for development false

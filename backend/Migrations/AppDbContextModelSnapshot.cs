@@ -37,6 +37,9 @@ namespace backend.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
+                    b.Property<int>("TimesPlayed")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -114,6 +117,28 @@ namespace backend.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("backend.Models.UserStats", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GamesPlayed")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GamesWon")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuizPlays")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuizzesCreated")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserStats");
+                });
+
             modelBuilder.Entity("backend.Models.Quiz", b =>
                 {
                     b.HasOne("backend.Models.User", null)
@@ -134,9 +159,25 @@ namespace backend.Migrations
                     b.Navigation("Quiz");
                 });
 
+            modelBuilder.Entity("backend.Models.UserStats", b =>
+                {
+                    b.HasOne("backend.Models.User", "User")
+                        .WithOne("Stats")
+                        .HasForeignKey("backend.Models.UserStats", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("backend.Models.Quiz", b =>
                 {
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("backend.Models.User", b =>
+                {
+                    b.Navigation("Stats");
                 });
 #pragma warning restore 612, 618
         }

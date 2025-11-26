@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using backend.Models;
+using backend.Interfaces;
 
 namespace backend.Services;
 
@@ -15,7 +16,7 @@ public class JwtService
         _configuration = configuration;
     }
 
-    public string GenerateToken(User user)
+    public string GenerateToken<T>(T subject) where T : IJwtSubject
     {
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)
@@ -24,9 +25,9 @@ public class JwtService
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.NameIdentifier, subject.Id.ToString()),
+            new Claim(ClaimTypes.Email, subject.Email),
+            new Claim(ClaimTypes.Name, subject.Username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
