@@ -5,29 +5,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EditProfileDialog } from "@/components/EditProfileDialog";
-import { Star, Users, Edit } from "lucide-react";
+import { PlayCircle, Star, Edit, Loader2 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserStats} from "@/lib/stats";
+import type { UserStats } from "@/lib/stats";
 
 export function ProfilePage() {
   const { user } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const stats = [
-    {
-      icon: Star,
-      value: "128",
-      label: "Quizzes Completed",
-    },
-    {
-      icon: Users,
-      value: "8.5k",
-      label: "Quizzes Created",
-    },
-    {
-      icon: Star,
-      value: "99%",
-      label: "Average Score",
-    },
-  ];
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    isError: statsError,
+  } = useQuery<UserStats>({
+    enabled: !!user?.id,
+    queryKey: ["user-stats", user?.id],
+    queryFn: () => fetchUserStats(user!.id),
+    staleTime: 60 * 1000,
+  });
 
   const activities = [
     {
@@ -78,32 +75,33 @@ export function ProfilePage() {
               <Badge variant="secondary" className="mb-6">
                 Pro quizzer
               </Badge>
+
+              <Link to="/stats">
+                <Button variant="link" className="text-sm p-0 h-auto">
+                  View full stats →
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
 
         <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {stats.map((stat, index) => (
-              <Card
-                key={index}
-                className="hover:shadow-md transition-shadow shadow-white bg-card"
-              >
-                <CardContent className="flex items-center gap-4 py-8">
-                  <div className="bg-card-darker p-3 rounded-lg">
-                    <stat.icon className="size-6 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold mb-1">
-                      {stat.value}
-                    </div>
-                    <div className="text-muted-foreground text-sm">
-                      {stat.label}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <StatCard 
+              label="Games PLayed" 
+              icon={<PlayCircle className="size-6 text-muted-foreground" />}
+              value={statsLoading ? <LoadingValue /> : statsError ? "-" : stats?.gamesPlayed ?? 0}
+            />
+            <StatCard
+              label="Games Won"
+              icon={<Star className="size-6 text-muted-foreground" />}
+              value={statsLoading ? <LoadingValue /> : statsError ? "-" : stats?.gamesWon ?? 0}
+              subLabel={
+                stats && stats.gamesPlayed > 0
+                ? '${((stats.gamesWon / stats.gamesPlayed) * 100).toFixed(1)}% win rate'
+                : "0.0% win rate"
+              }
+            />
           </div>
           <Card className="bg-card-dark">
             <CardHeader>
@@ -134,5 +132,40 @@ export function ProfilePage() {
 
       <EditProfileDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  icon,
+  subLabel,
+}: {
+  label: string;
+  value: React.ReactNode;
+  icon: React.ReactNode;
+  subLabel?: string;
+}) {
+  return (
+    <Card className="hover:shadow-md transition-shadow bg-card">
+      <CardContent className="flex items-center gap-4 py-6">
+        <div className="p-3 rounded-lg border bg-secondary/30">
+          {icon}
+        </div>
+        <div className="flex-1">
+          <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
+          <div className="text-3xl font-bold leading-tight mt-1">{value}</div>
+          {subLabel && <div className="text-xs text-muted-foreground mt-1">{subLabel}</div>}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function LoadingValue() {
+  return (
+    <span className="inline-flex items-center gap-1 text-muted-foreground">
+      <Loader2 className="size-4 animate-spin" />
+    </span>
   );
 }

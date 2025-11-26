@@ -10,4 +10,5 @@ public class User
 
     public string Password { get; set; } = string.Empty;
 
+    public UserStats? Stats { get; set; }
 }

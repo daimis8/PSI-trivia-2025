@@ -12,6 +12,8 @@ public class Quiz
 
     public string Description { get; set; } = string.Empty;
 
+    public int TimesPlayed { get; set; }
+
     public List<QuizQuestion> Questions { get; set; } = new();
 
 }

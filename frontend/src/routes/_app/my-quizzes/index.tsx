@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Loader2, PlusCircle, CircleQuestionMark, Edit, Trash2, FileText, ListChecks, AlertTriangle, Play } from "lucide-react";
+import { Loader2, PlusCircle, CircleQuestionMark, Edit, Trash2, FileText, ListChecks, AlertTriangle, Play, BarChart3 } from "lucide-react";
 import ErrorComponent from "@/components/Error";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
@@ -31,7 +31,7 @@ function RouteComponent() {
   const navigate = useNavigate();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   interface Question { id: number; questionText: string; options: string[]; correctOptionIndex: number }
-  interface MyQuiz { id: number; title: string; description: string; questions: Question[]; creatorID: number }
+  interface MyQuiz { id: number; title: string; description: string; questions: Question[]; creatorID: number; timesPlayed: number; }
   const [quizToDelete, setQuizToDelete] = useState<MyQuiz | null>(null);
 
 	const { isPending, isError, data } = useQuery<MyQuiz[]>({
@@ -169,6 +169,10 @@ function RouteComponent() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <ListChecks className="size-4" />
                       <span>{quiz.questions?.length || 0} question{quiz.questions?.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div className="flex item-center gap-2 text-sm text-muted-foreground">
+                      <BarChart3 className="size-4"/>
+                      <span>{quiz.timesPlayed ?? 0} play{(quiz.timesPlayed ?? 0) === 1 ? '' : 's'}</span>
                     </div>
                   </div>
                 </div>

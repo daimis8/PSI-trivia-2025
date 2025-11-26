@@ -234,4 +234,22 @@ public class QuizService
         await _db.SaveChangesAsync();
         return quiz;
     }
+
+    public async Task<bool> IncrementQuizPlaysAsync(int quizId)
+    {
+        var quiz = await _db.Quizzes.FirstOrDefaultAsync(q => q.ID == quizId);
+        if (quiz == null)
+        {
+            return false;
+        }
+
+        if (quiz.TimesPlayed < 0)
+        {
+            quiz.TimesPlayed = 0;
+        }
+
+        quiz.TimesPlayed += 1;
+        await _db.SaveChangesAsync();
+        return true;
+    }
 }

@@ -14,10 +14,13 @@ public class QuizController : ControllerBase
     private readonly UserService _userService;
     private readonly QuizService _quizService;
 
-    public QuizController(UserService userService, QuizService quizService)
+    private readonly UserStatsService _userStatsService;
+
+    public QuizController(UserService userService, QuizService quizService, UserStatsService userStatsService)
     {
         _userService = userService;
         _quizService = quizService;
+        _userStatsService = userStatsService;
     }
 
     // Get all quizes
@@ -65,6 +68,13 @@ public class QuizController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteById(int id)
     {
+        // Decrement user's created quiz count
+        var temp = await _quizService.GetQuizByIdAsync(id);
+        if (temp != null)
+        {
+            await _userStatsService.ChangeQuizNoAsync(temp.CreatorID, -1);
+        }
+
         var result = await _quizService.DeleteQuizAsync(id);
         if (!result)
         {
@@ -91,10 +101,15 @@ public class QuizController : ControllerBase
             Title = request?.Title ?? "New Quiz",
             Description = request?.Description ?? "",
             CreatorID = int.Parse(userId),
+            TimesPlayed = 0,
             Questions = new List<QuizQuestion>()
         };
 
         var createdQuiz = await _quizService.CreateQuizAsync(quiz);
+
+        // Increment user's created quiz count
+        await _userStatsService.ChangeQuizNoAsync(createdQuiz.CreatorID, 1);
+
         var response = MapToResponse(createdQuiz);
         return CreatedAtAction(nameof(GetById), new { id = createdQuiz.ID }, response);
     }
@@ -128,6 +143,7 @@ public class QuizController : ControllerBase
             CreatorID = existingQuiz.CreatorID,
             Title = request.Title,
             Description = request.Description,
+            TimesPlayed = existingQuiz.TimesPlayed,
             Questions = request.Questions.Select(q => new QuizQuestion
             {
                 Id = q.Id,
@@ -157,6 +173,7 @@ public class QuizController : ControllerBase
             CreatorID = quiz.CreatorID,
             Title = quiz.Title,
             Description = quiz.Description,
+            TimesPlayed = quiz.TimesPlayed,
             Questions = quiz.Questions.Select(q => new QuizQuestionDto(
                 Id: q.Id,
                 QuestionText: q.QuestionText,

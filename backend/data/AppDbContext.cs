@@ -14,12 +14,14 @@ public class AppDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Quiz> Quizzes => Set<Quiz>();
     public DbSet<QuizQuestion> QuizQuestions => Set<QuizQuestion>();
+    public DbSet<UserStats> UserStats => Set<UserStats>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ConfigureUsers(modelBuilder);
         ConfigureQuizzes(modelBuilder);
         ConfigureQuizQuestions(modelBuilder);
+        ConfigureUserStats(modelBuilder);
     }
 
     private static void ConfigureUsers(ModelBuilder modelBuilder)
@@ -50,6 +52,7 @@ public class AppDbContext : DbContext
                 .HasMaxLength(200);
             entity.Property(q => q.Description)
                 .HasMaxLength(2000);
+            entity.Property(q => q.TimesPlayed);
 
             entity.HasOne<User>()
                 .WithMany()
@@ -85,6 +88,23 @@ public class AppDbContext : DbContext
                     v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
                     v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>())
                 .Metadata.SetValueComparer(comparer);
+        });
+    }
+
+    private static void ConfigureUserStats(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UserStats>(entity =>
+        {
+            entity.HasKey(s => s.UserId);
+            entity.Property(s => s.GamesPlayed);
+            entity.Property(s => s.GamesWon);
+            entity.Property(s => s.QuizzesCreated);
+            entity.Property(s => s.QuizPlays);
+
+            entity.HasOne(s => s.User)
+                .WithOne(u => u.Stats)
+                .HasForeignKey<UserStats>(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

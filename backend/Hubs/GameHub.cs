@@ -14,11 +14,14 @@ public class GameHub : Hub
     private readonly QuizService _quizService;
     private readonly IHubContext<GameHub> _hubContext;
 
-    public GameHub(GameService gameService, QuizService quizService, IHubContext<GameHub> hubContext)
+    private readonly UserStatsService _userStatsService;
+
+    public GameHub(GameService gameService, QuizService quizService, IHubContext<GameHub> hubContext, UserStatsService userStatsService)
     {
         _gameService = gameService;
         _quizService = quizService;
         _hubContext = hubContext;
+        _userStatsService = userStatsService;
     }
 
     private string? GetUserId() => Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -97,6 +100,7 @@ public class GameHub : Hub
         EnsureHost(game);
         if (game.CurrentQuestionIndex + 1 >= game.Questions.Count)
         {
+            await RecordStats(game);
             game.Phase = GamePhase.Ended;
             await Clients.Group(Group(code)).SendAsync("GameEnded");
             return;
@@ -312,4 +316,36 @@ public class GameHub : Hub
     }
 
     private static string Group(string code) => $"game_{code.ToUpperInvariant()}";
+
+    private async Task RecordStats(Game game)
+    {
+        lock (game)
+        {
+            if (game.StatsRecorded)
+            {
+                return;
+            }
+            game.StatsRecorded = true;
+        }
+
+        await _quizService.IncrementQuizPlaysAsync(game.QuizId);
+
+        // Find all players that have an account
+        var validUserIds = game.Players.Values
+            .Where(p => p.UserId.HasValue)
+            .Select(p => p.UserId!.Value)
+            .Distinct()
+            .ToList();
+
+        // Find all winners
+        var maxScore = game.Players.Values.Select(p => p.TotalScore).DefaultIfEmpty(0).Max();
+        var winningUserIds = game.Players.Values
+            .Where(p => p.UserId.HasValue && p.TotalScore == maxScore)
+            .Select(p => p.UserId!.Value)
+            .Distinct()
+            .ToList();
+
+        await _userStatsService.RecordGameStatsAsync(validUserIds, winningUserIds);
+        await _userStatsService.IncrementQuizPlaysAsync(game.HostUserId);
+    }
 }

@@ -25,18 +25,23 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddDbContext<AppDbContext>(options =>
+if (!builder.Environment.IsEnvironment("Test"))
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
-    options.UseNpgsql(connectionString);
-});
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+        options.UseNpgsql(connectionString);
+    });
+}
+
 
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<PasswordService>();
 builder.Services.AddScoped<QuizService>();
 builder.Services.AddSingleton<GameService>();
+builder.Services.AddScoped<UserStatsService>();
 builder.Services.AddSignalR();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -73,8 +78,12 @@ app.UseMiddleware<ExceptionLoggingMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    var env = scope.ServiceProvider.GetRequiredService<IHostEnvironment>();
+    if (!env.IsEnvironment("Test"))
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+    }
 }
 
 if (app.Environment.IsDevelopment())
