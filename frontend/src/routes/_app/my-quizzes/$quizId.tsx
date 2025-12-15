@@ -136,7 +136,7 @@ function RouteComponent() {
   const updateQuestion = (
     questionId: number,
     field: keyof Question,
-    value: any
+    value: Question[keyof Question]
   ) => {
     setSaveError(null);
     setQuestions(

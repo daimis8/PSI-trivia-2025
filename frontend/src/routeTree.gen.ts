@@ -16,8 +16,9 @@ import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as HostCodeRouteImport } from './routes/host/$code'
 import { Route as GameCodeRouteImport } from './routes/game/$code'
-import { Route as AppProfileRouteImport } from './routes/_app/profile'
+import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
 import { Route as AppMyQuizzesIndexRouteImport } from './routes/_app/my-quizzes/index'
+import { Route as AppProfileProfileIdRouteImport } from './routes/_app/profile/$profileId'
 import { Route as AppMyQuizzesQuizIdRouteImport } from './routes/_app/my-quizzes/$quizId'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -54,14 +55,19 @@ const GameCodeRoute = GameCodeRouteImport.update({
   path: '/game/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppProfileRoute = AppProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppMyQuizzesIndexRoute = AppMyQuizzesIndexRouteImport.update({
   id: '/my-quizzes/',
   path: '/my-quizzes/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppProfileProfileIdRoute = AppProfileProfileIdRouteImport.update({
+  id: '/profile/$profileId',
+  path: '/profile/$profileId',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppMyQuizzesQuizIdRoute = AppMyQuizzesQuizIdRouteImport.update({
@@ -74,23 +80,25 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/play': typeof PlayRoute
   '/register': typeof RegisterRoute
-  '/profile': typeof AppProfileRoute
   '/game/$code': typeof GameCodeRoute
   '/host/$code': typeof HostCodeRoute
   '/': typeof AppIndexRoute
   '/my-quizzes/$quizId': typeof AppMyQuizzesQuizIdRoute
+  '/profile/$profileId': typeof AppProfileProfileIdRoute
   '/my-quizzes': typeof AppMyQuizzesIndexRoute
+  '/profile': typeof AppProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/play': typeof PlayRoute
   '/register': typeof RegisterRoute
-  '/profile': typeof AppProfileRoute
   '/game/$code': typeof GameCodeRoute
   '/host/$code': typeof HostCodeRoute
   '/': typeof AppIndexRoute
   '/my-quizzes/$quizId': typeof AppMyQuizzesQuizIdRoute
+  '/profile/$profileId': typeof AppProfileProfileIdRoute
   '/my-quizzes': typeof AppMyQuizzesIndexRoute
+  '/profile': typeof AppProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,12 +106,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/play': typeof PlayRoute
   '/register': typeof RegisterRoute
-  '/_app/profile': typeof AppProfileRoute
   '/game/$code': typeof GameCodeRoute
   '/host/$code': typeof HostCodeRoute
   '/_app/': typeof AppIndexRoute
   '/_app/my-quizzes/$quizId': typeof AppMyQuizzesQuizIdRoute
+  '/_app/profile/$profileId': typeof AppProfileProfileIdRoute
   '/_app/my-quizzes/': typeof AppMyQuizzesIndexRoute
+  '/_app/profile/': typeof AppProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,35 +120,38 @@ export interface FileRouteTypes {
     | '/login'
     | '/play'
     | '/register'
-    | '/profile'
     | '/game/$code'
     | '/host/$code'
     | '/'
     | '/my-quizzes/$quizId'
+    | '/profile/$profileId'
     | '/my-quizzes'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/play'
     | '/register'
-    | '/profile'
     | '/game/$code'
     | '/host/$code'
     | '/'
     | '/my-quizzes/$quizId'
+    | '/profile/$profileId'
     | '/my-quizzes'
+    | '/profile'
   id:
     | '__root__'
     | '/_app'
     | '/login'
     | '/play'
     | '/register'
-    | '/_app/profile'
     | '/game/$code'
     | '/host/$code'
     | '/_app/'
     | '/_app/my-quizzes/$quizId'
+    | '/_app/profile/$profileId'
     | '/_app/my-quizzes/'
+    | '/_app/profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -202,11 +214,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GameCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/profile': {
-      id: '/_app/profile'
+    '/_app/profile/': {
+      id: '/_app/profile/'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof AppProfileRouteImport
+      preLoaderRoute: typeof AppProfileIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/my-quizzes/': {
@@ -214,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/my-quizzes'
       fullPath: '/my-quizzes'
       preLoaderRoute: typeof AppMyQuizzesIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/profile/$profileId': {
+      id: '/_app/profile/$profileId'
+      path: '/profile/$profileId'
+      fullPath: '/profile/$profileId'
+      preLoaderRoute: typeof AppProfileProfileIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/my-quizzes/$quizId': {
@@ -227,17 +246,19 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteRouteChildren {
-  AppProfileRoute: typeof AppProfileRoute
   AppIndexRoute: typeof AppIndexRoute
   AppMyQuizzesQuizIdRoute: typeof AppMyQuizzesQuizIdRoute
+  AppProfileProfileIdRoute: typeof AppProfileProfileIdRoute
   AppMyQuizzesIndexRoute: typeof AppMyQuizzesIndexRoute
+  AppProfileIndexRoute: typeof AppProfileIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
-  AppProfileRoute: AppProfileRoute,
   AppIndexRoute: AppIndexRoute,
   AppMyQuizzesQuizIdRoute: AppMyQuizzesQuizIdRoute,
+  AppProfileProfileIdRoute: AppProfileProfileIdRoute,
   AppMyQuizzesIndexRoute: AppMyQuizzesIndexRoute,
+  AppProfileIndexRoute: AppProfileIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
