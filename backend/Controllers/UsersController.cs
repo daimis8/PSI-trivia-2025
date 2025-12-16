@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
     }
 
     // Get user by ID
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
@@ -41,8 +41,55 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
+    [Authorize]
+    [HttpGet("profile")]
+    public async Task<IActionResult> GetCurrentUserProfile()
+    {
+        var userIdValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdValue) || !int.TryParse(userIdValue, out var userId))
+        {
+            return Unauthorized(new { message = "Unauthorized" });
+        }
+
+        var profile = await _userService.GetUserProfileAsync(userId);
+
+        if (profile == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        return Ok(profile);
+    }
+
+    [HttpGet("{id:int}/profile")]
+    public async Task<IActionResult> GetUserProfile(int id)
+    {
+        var profile = await _userService.GetUserProfileAsync(id);
+
+        if (profile == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        var userIdValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdValue) || !int.TryParse(userIdValue, out var requesterId) || requesterId != id)
+        {
+            profile.Email = null;
+        }
+
+        return Ok(profile);
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchUsers([FromQuery] string? query, [FromQuery] int limit = 5)
+    {
+        var results = await _userService.SearchUsersAsync(query, limit);
+        return Ok(results);
+    }
+
     // Delete user by ID
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _userService.DeleteUserAsync(id);

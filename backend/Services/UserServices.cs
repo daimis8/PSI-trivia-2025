@@ -1,5 +1,7 @@
+using System;
 using System.Text.RegularExpressions;
 using backend.Data;
+using backend.DTOs;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -178,5 +180,60 @@ public class UserService
         await _db.SaveChangesAsync();
 
         return (true, null);
+    }
+
+    public async Task<UserProfileDto?> GetUserProfileAsync(int userId)
+    {
+        var user = await _db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return null;
+        }
+
+        var stats = await _userStatsService.GetUserStatsAsync(userId)
+            ?? await _userStatsService.AddUserStatsAsync(userId);
+
+        return new UserProfileDto
+        {
+            UserId = user.Id,
+            Username = user.Username,
+            Email = user.Email,
+            Stats = new UserStatsDto
+            {
+                UserId = stats.UserId,
+                GamesPlayed = stats.GamesPlayed,
+                GamesWon = stats.GamesWon,
+                QuizzesCreated = stats.QuizzesCreated,
+                QuizPlays = stats.QuizPlays
+            }
+        };
+    }
+
+    public async Task<List<UserSearchResultDto>> SearchUsersAsync(string? query, int limit = 5)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return new List<UserSearchResultDto>();
+        }
+
+        var normalizedQuery = query.Trim().ToLower();
+        limit = Math.Max(1, Math.Min(limit, 20));
+
+        return await _db.Users
+            .AsNoTracking()
+            .Where(u => u.Username.ToLower().Contains(normalizedQuery))
+            .OrderBy(u => u.Username)
+            .Take(limit)
+            .Select(u => new UserSearchResultDto
+            {
+                UserId = u.Id,
+                Username = u.Username,
+                GamesPlayed = u.Stats != null ? u.Stats.GamesPlayed : 0,
+                QuizPlays = u.Stats != null ? u.Stats.QuizPlays : 0
+            })
+            .ToListAsync();
     }
 }
