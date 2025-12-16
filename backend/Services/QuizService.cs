@@ -252,4 +252,20 @@ public class QuizService
         await _db.SaveChangesAsync();
         return true;
     }
+
+    // Get top quizzes by times played
+    public async Task<List<(int QuizId, string Title, string CreatorUsername, int TimesPlayed)>> GetTopQuizzesAsync(int limit = 10)
+    {
+        return await _db.Quizzes
+            .Include(q => q.Creator)
+            .OrderByDescending(q => q.TimesPlayed)
+            .Take(limit)
+            .Select(q => new ValueTuple<int, string, string, int>(
+                q.ID, 
+                q.Title, 
+                q.Creator!.Username, 
+                q.TimesPlayed
+            ))
+            .ToListAsync();
+    }
 }
