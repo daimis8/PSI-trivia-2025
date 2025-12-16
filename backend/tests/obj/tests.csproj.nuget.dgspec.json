@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\tests\\tests.csproj": {}
+    "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\backend.csproj": {
+    "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\backend.csproj",
+        "projectUniqueName": "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\artur\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\obj\\",
+        "projectPath": "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/backend.csproj",
+        "packagesPath": "/Users/daimis/.nuget/packages/",
+        "outputPath": "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\artur\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/daimis/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -100,36 +98,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\tests\\tests.csproj": {
+    "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\tests\\tests.csproj",
+        "projectUniqueName": "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/tests.csproj",
         "projectName": "tests",
-        "projectPath": "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\tests\\tests.csproj",
-        "packagesPath": "C:\\Users\\artur\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\tests\\obj\\",
+        "projectPath": "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/tests.csproj",
+        "packagesPath": "/Users/daimis/.nuget/packages/",
+        "outputPath": "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\artur\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/daimis/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\backend.csproj": {
-                "projectPath": "C:\\Users\\artur\\Documents\\UNI\\PSI 1 dalis\\pratybos\\PSI-trivia-2025\\backend\\backend.csproj"
+              "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/backend.csproj": {
+                "projectPath": "/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/backend.csproj"
               }
             }
           }
@@ -199,7 +195,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

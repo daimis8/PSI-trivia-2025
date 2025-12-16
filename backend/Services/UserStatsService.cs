@@ -97,4 +97,15 @@ public class UserStatsService
         await _db.SaveChangesAsync();
         return true;
     }
+
+    // Get top players by games won
+    public async Task<List<(int UserId, string Username, int GamesWon)>> GetTopPlayersAsync(int limit = 10)
+    {
+        return await _db.UserStats
+            .Include(s => s.User)
+            .OrderByDescending(s => s.GamesWon)
+            .Take(limit)
+            .Select(s => new ValueTuple<int, string, int>(s.UserId, s.User!.Username, s.GamesWon))
+            .ToListAsync();
+    }
 }

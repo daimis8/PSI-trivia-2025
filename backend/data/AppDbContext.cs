@@ -54,7 +54,7 @@ public class AppDbContext : DbContext
                 .HasMaxLength(2000);
             entity.Property(q => q.TimesPlayed);
 
-            entity.HasOne<User>()
+            entity.HasOne(q => q.Creator)
                 .WithMany()
                 .HasForeignKey(q => q.CreatorID)
                 .OnDelete(DeleteBehavior.Cascade);
