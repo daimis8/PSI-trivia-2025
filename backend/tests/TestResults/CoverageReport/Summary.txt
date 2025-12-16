@@ -1,0 +1,70 @@
+Summary
+  Generated on: 16/12/2025 - 16:27:26
+  Coverage date: 16/12/2025 - 16:26:21 - 16/12/2025 - 16:26:52
+  Parser: MultiReport (2x Cobertura)
+  Assemblies: 1
+  Classes: 48
+  Files: 44
+  Line coverage: 80.6%
+  Covered lines: 1234
+  Uncovered lines: 297
+  Coverable lines: 1531
+  Total lines: 2485
+  Branch coverage: 64.4% (236 of 366)
+  Covered branches: 236
+  Total branches: 366
+  Method coverage: 88.3% (190 of 215)
+  Full method coverage: 73% (157 of 215)
+  Covered methods: 190
+  Fully covered methods: 157
+  Total methods: 215
+
+backend                                           80.6%
+  backend.Controllers.AuthController              87.2%
+  backend.Controllers.GameController              93.1%
+  backend.Controllers.LeaderboardController          0%
+  backend.Controllers.QuizController                89%
+  backend.Controllers.UsersController             86.9%
+  backend.Controllers.UserStatController             0%
+  backend.Data.AppDbContext                       98.8%
+  backend.DTOs.CreateGameRequest                   100%
+  backend.DTOs.CreateGameResponse                  100%
+  backend.DTOs.CreateQuizRequest                   100%
+  backend.DTOs.LeaderboardEntryDto                 100%
+  backend.DTOs.LobbyPlayerDto                      100%
+  backend.DTOs.LobbyUpdateDto                      100%
+  backend.DTOs.LoginRequest                        100%
+  backend.DTOs.PlayerAnswerResultDto               100%
+  backend.DTOs.QuestionDto                         100%
+  backend.DTOs.QuestionEndedDto                    100%
+  backend.DTOs.QuizQuestionDto                     100%
+  backend.DTOs.QuizResponse                        100%
+  backend.DTOs.TopPlayerDto                          0%
+  backend.DTOs.TopQuizDto                            0%
+  backend.DTOs.UpdateEmailRequest                  100%
+  backend.DTOs.UpdatePasswordRequest               100%
+  backend.DTOs.UpdateQuizRequest                   100%
+  backend.DTOs.UpdateUsernameRequest               100%
+  backend.DTOs.UserProfileDto                      100%
+  backend.DTOs.UserSearchResultDto                 100%
+  backend.DTOs.UserStatsDto                        100%
+  backend.Exceptions.QuizValidationException      41.6%
+  backend.Extensions.CollectionExtensions          100%
+  backend.Hubs.GameHub                            87.9%
+  backend.Middleware.ExceptionLoggingMiddleware   17.3%
+  backend.Models.Game                              100%
+  backend.Models.GamePlayer                        100%
+  backend.Models.LeaderboardEntry                   20%
+  backend.Models.PlayerAnswerSummary                 0%
+  backend.Models.Quiz                             85.7%
+  backend.Models.QuizQuestion                     71.4%
+  backend.Models.ScoreResult                        95%
+  backend.Models.User                              100%
+  backend.Models.UserStats                        83.3%
+  backend.Services.GameService                     100%
+  backend.Services.JwtService                      100%
+  backend.Services.PasswordService                 100%
+  backend.Services.QuizService                    77.8%
+  backend.Services.UserService                    83.5%
+  backend.Services.UserStatsService                100%
+  Program                                         76.2%
