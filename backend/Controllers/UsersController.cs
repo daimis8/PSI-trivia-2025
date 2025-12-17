@@ -126,8 +126,8 @@ public class UsersController : ControllerBase
         Response.Cookies.Append("authToken", newToken, new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, //for development
-            SameSite = SameSiteMode.Strict,
+            Secure = true,
+            SameSite = SameSiteMode.None,
             Expires = DateTimeOffset.UtcNow.AddHours(1)
         });
 
@@ -168,8 +168,8 @@ public class UsersController : ControllerBase
         Response.Cookies.Append("authToken", newToken, new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, //for development
-            SameSite = SameSiteMode.Strict,
+            Secure = true,
+            SameSite = SameSiteMode.None,
             Expires = DateTimeOffset.UtcNow.AddHours(1)
         });
 

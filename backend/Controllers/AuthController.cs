@@ -59,11 +59,11 @@ public class AuthController : ControllerBase
         
         var token = _jwtService.GenerateToken(newUser);
 
-        Response.Cookies.Append("authToken'", token, new CookieOptions
+        Response.Cookies.Append("authToken", token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, // for development false
-            SameSite = SameSiteMode.Strict,
+            Secure = true,
+            SameSite = SameSiteMode.None,
             Expires = DateTimeOffset.UtcNow.AddHours(1)
         });
         
@@ -101,8 +101,8 @@ public class AuthController : ControllerBase
         Response.Cookies.Append("authToken", token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, // for development false
-            SameSite = SameSiteMode.Strict,
+            Secure = true,
+            SameSite = SameSiteMode.None,
             Expires = DateTimeOffset.UtcNow.AddHours(1)
         });
         
