@@ -1,4 +1,3 @@
-import { getApiUrl } from "./api";
 
 export interface UserStats {
   userId: number;
@@ -22,11 +21,10 @@ export interface UserSearchResult {
   quizPlays: number;
 }
 
+import { apiFetch } from "@/lib/api";
+
 async function request<T>(input: string, init?: RequestInit) {
-  const response = await fetch(getApiUrl(input), {
-    credentials: "include",
-    ...init,
-  });
+  const response = await apiFetch(input, init);
 
   if (!response.ok) {
     const message = await response.text().catch(() => "Failed to fetch profile data");

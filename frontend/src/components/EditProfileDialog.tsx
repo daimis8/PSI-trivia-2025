@@ -19,7 +19,7 @@ import {
   validateConfirmPassword,
   validateUsername,
 } from "@/lib/validation";
-import { getApiUrl } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 
 interface EditProfileDialogProps {
   open: boolean;
@@ -117,10 +117,9 @@ export function EditProfileDialog({
 
     if (username !== user?.username) {
       try {
-        const response = await fetch(getApiUrl("/api/users/username"), {
+        const response = await apiFetch("/api/users/username", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          credentials: "include",
           body: JSON.stringify({ username }),
         });
 
@@ -141,10 +140,9 @@ export function EditProfileDialog({
 
     if (email !== user?.email) {
       try {
-        const response = await fetch(getApiUrl("/api/users/email"), {
+        const response = await apiFetch("/api/users/email", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          credentials: "include",
           body: JSON.stringify({ email }),
         });
 
@@ -165,10 +163,9 @@ export function EditProfileDialog({
 
     if (currentPassword && newPassword) {
       try {
-        const response = await fetch(getApiUrl("/api/users/password"), {
+        const response = await apiFetch("/api/users/password", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          credentials: "include",
           body: JSON.stringify({
             currentPassword,
             newPassword,

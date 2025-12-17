@@ -20,7 +20,7 @@ import ErrorComponent from "@/components/Error";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { getApiUrl } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 
 export const Route = createFileRoute("/_app/my-quizzes/$quizId")({
   component: RouteComponent,
@@ -57,7 +57,7 @@ function RouteComponent() {
   const { isPending, isError, data } = useQuery<Quiz>({
     queryKey: ["quiz", quizId],
     queryFn: async () => {
-      const response = await fetch(getApiUrl(`/api/quizzes/${quizId}`));
+      const response = await apiFetch(`/api/quizzes/${quizId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch quiz");
       }
@@ -76,7 +76,7 @@ function RouteComponent() {
 
   const { mutate: updateQuiz, isPending: isSaving } = useMutation({
     mutationFn: async () => {
-      const response = await fetch(getApiUrl(`/api/quizzes/${quizId}`), {
+      const response = await apiFetch(`/api/quizzes/${quizId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

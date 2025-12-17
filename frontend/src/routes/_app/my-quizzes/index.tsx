@@ -4,6 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Loader2, PlusCircle, CircleQuestionMark, Edit, Trash2, FileText, ListChecks, AlertTriangle, Play, BarChart3 } from "lucide-react";
 import ErrorComponent from "@/components/Error";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { apiFetch } from "@/lib/api";
 import {
   Card,
   CardContent,
@@ -21,7 +22,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { getApiUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/_app/my-quizzes/")({
   component: RouteComponent,
@@ -38,7 +38,7 @@ function RouteComponent() {
   const { isPending, isError, data } = useQuery<MyQuiz[]>({
     queryKey: ["my-quizzes"],
     queryFn: async () => {
-      const response = await fetch(getApiUrl("/api/quizzes/my"));
+      const response = await apiFetch("/api/quizzes/my");
       if (!response.ok) {
         throw new Error("Failed to fetch quizzes");
       }
@@ -48,7 +48,7 @@ function RouteComponent() {
 
   const { mutate: createQuiz, isPending: isCreating } = useMutation({
     mutationFn: async () => {
-      const response = await fetch(getApiUrl("/api/quizzes/my"), {
+      const response = await apiFetch("/api/quizzes/my", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ function RouteComponent() {
 
   const { mutate: deleteQuiz, isPending: isDeleting } = useMutation({
     mutationFn: async (quizId: number) => {
-      const response = await fetch(getApiUrl(`/api/quizzes/${quizId}`), {
+      const response = await apiFetch(`/api/quizzes/${quizId}`, {
         method: "DELETE",
       });
 
@@ -88,11 +88,10 @@ function RouteComponent() {
 
   const { mutate: startGame, isPending: isStarting } = useMutation({
     mutationFn: async (quizId: number) => {
-      const res = await fetch(getApiUrl("/api/games"), {
+      const res = await apiFetch("/api/games", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quizId }),
-        credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to create game");
       return res.json() as Promise<{ code: string }>;

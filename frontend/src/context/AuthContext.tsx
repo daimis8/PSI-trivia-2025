@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getApiUrl } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 
 interface User {
   id: number;
@@ -30,9 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { data, isLoading, refetch } = useQuery<AuthResponse>({
     queryKey: ["auth"],
     queryFn: async () => {
-      const response = await fetch(getApiUrl("/api/authorized"), {
-        credentials: "include",
-      });
+      const response = await apiFetch("/api/authorized");
 
       if (!response.ok) {
         return { authenticated: false };
@@ -59,9 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch(getApiUrl("/api/logout"), {
+      await apiFetch("/api/logout", {
         method: "POST",
-        credentials: "include",
       });
     } catch (error) {
       console.error("Logout failed:", error);
