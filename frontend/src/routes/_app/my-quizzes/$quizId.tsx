@@ -21,7 +21,6 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { apiFetch } from "@/lib/api";
-import { getApiUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/_app/my-quizzes/$quizId")({
   component: RouteComponent,

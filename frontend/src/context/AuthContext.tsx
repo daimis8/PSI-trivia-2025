@@ -1,7 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
-import { getApiUrl } from "@/lib/api";
 
 interface User {
   id: number;

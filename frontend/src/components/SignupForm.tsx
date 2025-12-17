@@ -25,7 +25,6 @@ import {
   validateUsername,
 } from "@/lib/validation";
 import { apiFetch } from "@/lib/api";
-import { getApiUrl } from "@/lib/api";
 
 export function SignupForm() {
   const navigate = useNavigate();

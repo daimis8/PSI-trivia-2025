@@ -17,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertBox } from "@/components/AlertBox";
 import { apiFetch } from "@/lib/api";
-import { getApiUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/play")({
   component: RouteComponent,

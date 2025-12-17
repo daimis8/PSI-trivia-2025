@@ -19,7 +19,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { apiFetch } from "@/lib/api";
-import { getApiUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/_app/")({
   component: Index,

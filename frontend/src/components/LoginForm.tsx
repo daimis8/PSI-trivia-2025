@@ -20,7 +20,6 @@ import { Input } from "@/components/ui/input";
 import { AlertBox } from "@/components/AlertBox";
 import { validateLoginPassword } from "@/lib/validation";
 import { apiFetch } from "@/lib/api";
-import { getApiUrl } from "@/lib/api";
 
 interface LoginFormProps {
   redirectUrl?: string;

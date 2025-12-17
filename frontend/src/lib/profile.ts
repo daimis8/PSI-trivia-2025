@@ -1,4 +1,3 @@
-import { getApiUrl } from "./api";
 
 export interface UserStats {
   userId: number;
