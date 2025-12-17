@@ -165,7 +165,7 @@ export function EditProfileDialog({
 
     if (currentPassword && newPassword) {
       try {
-        const response = awaitfetch(getApiUrl("/api/users/password", {
+        const response = await fetch(getApiUrl("/api/users/password"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
