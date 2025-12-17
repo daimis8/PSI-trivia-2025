@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   Card,
@@ -127,7 +127,13 @@ function Index() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          {player.username}
+                          <Link
+                            to="/profile/$profileId"
+                            params={{ profileId: player.userId.toString() }}
+                            className="text-primary hover:underline"
+                          >
+                            {player.username}
+                          </Link>
                           {user?.id === player.userId && (
                             <Badge variant="outline" className="text-xs">
                               You
@@ -192,7 +198,13 @@ function Index() {
                       </TableCell>
                       <TableCell>
                         <div>
-                          <div className="font-medium">{quiz.title}</div>
+                          <Link
+                            to="/quizes/$quizId"
+                            params={{ quizId: quiz.quizId.toString() }}
+                            className="font-medium text-primary hover:underline"
+                          >
+                            {quiz.title}
+                          </Link>
                           <div className="text-sm text-muted-foreground">
                             by {quiz.creatorUsername}
                           </div>
