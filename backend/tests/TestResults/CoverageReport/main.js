@@ -214,15 +214,15 @@ var assemblies = [
     "name": "backend",
     "classes": [
       { "name": "backend.Controllers.AuthController", "rp": "backend_AuthController.html", "cl": 89, "ucl": 13, "cal": 102, "tl": 163, "cb": 15, "tb": 26, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Controllers.GameController", "rp": "backend_GameController.html", "cl": 27, "ucl": 2, "cal": 29, "tl": 62, "cb": 13, "tb": 16, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Controllers.LeaderboardController", "rp": "backend_LeaderboardController.html", "cl": 0, "ucl": 30, "cal": 30, "tl": 59, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Controllers.QuizController", "rp": "backend_QuizController.html", "cl": 98, "ucl": 12, "cal": 110, "tl": 186, "cb": 19, "tb": 32, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Controllers.GameController", "rp": "backend_GameController.html", "cl": 24, "ucl": 2, "cal": 26, "tl": 57, "cb": 11, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Controllers.LeaderboardController", "rp": "backend_LeaderboardController.html", "cl": 30, "ucl": 0, "cal": 30, "tl": 59, "cb": 8, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Controllers.QuizController", "rp": "backend_QuizController.html", "cl": 82, "ucl": 54, "cal": 136, "tl": 220, "cb": 13, "tb": 38, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Controllers.UsersController", "rp": "backend_UsersController.html", "cl": 107, "ucl": 16, "cal": 123, "tl": 214, "cb": 24, "tb": 40, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Controllers.UserStatController", "rp": "backend_UserStatController.html", "cl": 0, "ucl": 18, "cal": 18, "tl": 38, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Controllers.UserStatController", "rp": "backend_UserStatController.html", "cl": 18, "ucl": 0, "cal": 18, "tl": 38, "cb": 2, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Data.AppDbContext", "rp": "backend_AppDbContext.html", "cl": 87, "ucl": 1, "cal": 88, "tl": 110, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.CreateGameRequest", "rp": "backend_CreateGameRequest.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 7, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.CreateGameResponse", "rp": "backend_CreateGameResponse.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.DTOs.CreateQuizRequest", "rp": "backend_CreateQuizRequest.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.DTOs.CreateQuizRequest", "rp": "backend_CreateQuizRequest.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.LeaderboardEntryDto", "rp": "backend_LeaderboardEntryDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.LobbyPlayerDto", "rp": "backend_LobbyPlayerDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.LobbyUpdateDto", "rp": "backend_LobbyUpdateDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -230,10 +230,12 @@ var assemblies = [
       { "name": "backend.DTOs.PlayerAnswerResultDto", "rp": "backend_PlayerAnswerResultDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.QuestionDto", "rp": "backend_QuestionDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.QuestionEndedDto", "rp": "backend_QuestionEndedDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.DTOs.QuizPublicResponse", "rp": "backend_QuizPublicResponse.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.QuizQuestionDto", "rp": "backend_QuizQuestionDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.DTOs.QuizQuestionPublicDto", "rp": "backend_QuizQuestionPublicDto.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.QuizResponse", "rp": "backend_QuizResponse.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 12, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.DTOs.TopPlayerDto", "rp": "backend_TopPlayerDto.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.DTOs.TopQuizDto", "rp": "backend_TopQuizDto.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.DTOs.TopPlayerDto", "rp": "backend_TopPlayerDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.DTOs.TopQuizDto", "rp": "backend_TopQuizDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.UpdateEmailRequest", "rp": "backend_UpdateEmailRequest.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 7, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.UpdatePasswordRequest", "rp": "backend_UpdatePasswordRequest.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.DTOs.UpdateQuizRequest", "rp": "backend_UpdateQuizRequest.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 9, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -248,7 +250,7 @@ var assemblies = [
       { "name": "backend.Models.Game", "rp": "backend_Game.html", "cl": 13, "ucl": 0, "cal": 13, "tl": 73, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Models.GamePlayer", "rp": "backend_GamePlayer.html", "cl": 7, "ucl": 0, "cal": 7, "tl": 73, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Models.LeaderboardEntry", "rp": "backend_LeaderboardEntry.html", "cl": 2, "ucl": 8, "cal": 10, "tl": 73, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Models.PlayerAnswerSummary", "rp": "backend_PlayerAnswerSummary.html", "cl": 0, "ucl": 4, "cal": 4, "tl": 73, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Models.PlayerAnswerSummary", "rp": "backend_PlayerAnswerSummary.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 73, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Models.Quiz", "rp": "backend_Quiz.html", "cl": 6, "ucl": 1, "cal": 7, "tl": 41, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Models.QuizQuestion", "rp": "backend_QuizQuestion.html", "cl": 5, "ucl": 2, "cal": 7, "tl": 41, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Models.ScoreResult", "rp": "backend_ScoreResult.html", "cl": 19, "ucl": 1, "cal": 20, "tl": 40, "cb": 5, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -257,10 +259,10 @@ var assemblies = [
       { "name": "backend.Services.GameService", "rp": "backend_GameService.html", "cl": 42, "ucl": 0, "cal": 42, "tl": 66, "cb": 6, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Services.JwtService", "rp": "backend_JwtService.html", "cl": 27, "ucl": 0, "cal": 27, "tl": 46, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Services.PasswordService", "rp": "backend_PasswordService.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 14, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.QuizService", "rp": "backend_QuizService.html", "cl": 151, "ucl": 43, "cal": 194, "tl": 271, "cb": 40, "tb": 58, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "backend.Services.UserService", "rp": "backend_UserService.html", "cl": 127, "ucl": 25, "cal": 152, "tl": 239, "cb": 26, "tb": 38, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Services.QuizService", "rp": "backend_QuizService.html", "cl": 136, "ucl": 58, "cal": 194, "tl": 271, "cb": 38, "tb": 58, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "backend.Services.UserService", "rp": "backend_UserService.html", "cl": 125, "ucl": 27, "cal": 152, "tl": 239, "cb": 25, "tb": 38, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "backend.Services.UserStatsService", "rp": "backend_UserStatsService.html", "cl": 71, "ucl": 0, "cal": 71, "tl": 111, "cb": 8, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "Program", "rp": "backend_Program.html", "cl": 61, "ucl": 19, "cal": 80, "tl": 102, "cb": 4, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "Program", "rp": "backend_Program.html", "cl": 65, "ucl": 20, "cal": 85, "tl": 107, "cb": 4, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -275,10 +277,22 @@ var riskHotspotMetrics = [
 
 var riskHotspots = [
   {
+    "assembly": "backend", "class": "backend.Controllers.QuizController", "reportPath": "backend_QuizController.html", "methodName": "Create()", "methodShortName": "Create()", "fileIndex": 0, "line": 106,
+    "metrics": [
+      { "value": 156, "exceeded": true },
+      { "value": 12, "exceeded": false },
+    ]},
+  {
     "assembly": "backend", "class": "backend.Services.QuizService", "reportPath": "backend_QuizService.html", "methodName": "ValidateQuiz(backend.Models.Quiz)", "methodShortName": "ValidateQuiz(...)", "fileIndex": 0, "line": 19,
     "metrics": [
       { "value": 108, "exceeded": true },
       { "value": 34, "exceeded": true },
+    ]},
+  {
+    "assembly": "backend", "class": "backend.Controllers.QuizController", "reportPath": "backend_QuizController.html", "methodName": "GetByIdPublic()", "methodShortName": "GetByIdPublic()", "fileIndex": 0, "line": 69,
+    "metrics": [
+      { "value": 42, "exceeded": true },
+      { "value": 6, "exceeded": false },
     ]},
   {
     "assembly": "backend", "class": "backend.Middleware.ExceptionLoggingMiddleware", "reportPath": "backend_ExceptionLoggingMiddleware.html", "methodName": "LogExceptionAsync()", "methodShortName": "LogExceptionAsync()", "fileIndex": 0, "line": 44,
@@ -295,7 +309,7 @@ var riskHotspots = [
   {
     "assembly": "backend", "class": "backend.Services.QuizService", "reportPath": "backend_QuizService.html", "methodName": "UpdateQuizAsync()", "methodShortName": "UpdateQuizAsync()", "fileIndex": 0, "line": 174,
     "metrics": [
-      { "value": 17, "exceeded": false },
+      { "value": 27, "exceeded": false },
       { "value": 16, "exceeded": true },
     ]},
 ];

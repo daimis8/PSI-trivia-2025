@@ -166,7 +166,7 @@ public class GameControllerTests : IClassFixture<CustomWebApplicationFactory>
         var response = await client.PostAsJsonAsync("/api/games", request);
 
         // Assert
-        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]

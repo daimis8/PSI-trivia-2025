@@ -958,3 +958,4 @@ C:/Users/artur/Documents/UNI/PSI 1 dalis/pratybos/PSI-trivia-2025/backend/tests/
 /Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/obj/Debug/net9.0/tests.csproj.Up2Date
 /Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/obj/Debug/net9.0/tests.genruntimeconfig.cache
 /Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/obj/Debug/net9.0/ref/tests.dll
+/Users/daimis/Programing/PSI/PSI-trivia-2025/backend/tests/bin/Debug/net9.0/appsettings.Production.json
