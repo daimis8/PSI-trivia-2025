@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertBox } from "@/components/AlertBox";
 import { validateLoginPassword } from "@/lib/validation";
+import { getApiUrl } from "@/lib/api";
 
 interface LoginFormProps {
   redirectUrl?: string;
@@ -44,7 +45,7 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
       identifier: string;
       password: string;
     }) => {
-      const response = await fetch("/api/login", {
+      const response = await fetch(getApiUrl("/api/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),

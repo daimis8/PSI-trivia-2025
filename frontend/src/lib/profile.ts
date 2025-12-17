@@ -1,3 +1,5 @@
+import { getApiUrl } from "./api";
+
 export interface UserStats {
   userId: number;
   gamesPlayed: number;
@@ -20,8 +22,8 @@ export interface UserSearchResult {
   quizPlays: number;
 }
 
-async function request<T>(input: RequestInfo | URL, init?: RequestInit) {
-  const response = await fetch(input, {
+async function request<T>(input: string, init?: RequestInit) {
+  const response = await fetch(getApiUrl(input), {
     credentials: "include",
     ...init,
   });

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { getApiUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/_app/")({
   component: Index,
@@ -46,7 +47,7 @@ function Index() {
   } = useQuery<TopPlayer[]>({
     queryKey: ["top-players"],
     queryFn: async () => {
-      const response = await fetch("/api/leaderboard/top-players?limit=10");
+      const response = await fetch(getApiUrl("/api/leaderboard/top-players?limit=10"));
       if (!response.ok) {
         throw new Error("Failed to fetch top players");
       }
@@ -61,7 +62,7 @@ function Index() {
   } = useQuery<TopQuiz[]>({
     queryKey: ["top-quizzes"],
     queryFn: async () => {
-      const response = await fetch("/api/leaderboard/top-quizzes?limit=10");
+      const response = await fetch(getApiUrl("/api/leaderboard/top-quizzes?limit=10"));
       if (!response.ok) {
         throw new Error("Failed to fetch top quizzes");
       }

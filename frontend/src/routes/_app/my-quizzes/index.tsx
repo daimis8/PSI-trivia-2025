@@ -21,9 +21,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { getApiUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/_app/my-quizzes/")({
-	component: RouteComponent,
+  component: RouteComponent,
 });
 
 function RouteComponent() {
@@ -34,20 +35,20 @@ function RouteComponent() {
   interface MyQuiz { id: number; title: string; description: string; questions: Question[]; creatorID: number; timesPlayed: number; }
   const [quizToDelete, setQuizToDelete] = useState<MyQuiz | null>(null);
 
-	const { isPending, isError, data } = useQuery<MyQuiz[]>({
-		queryKey: ["my-quizzes"],
-		queryFn: async () => {
-			const response = await fetch("/api/quizzes/my");
-			if (!response.ok) {
-				throw new Error("Failed to fetch quizzes");
-			}
-			return response.json();
-		},
-	});
+  const { isPending, isError, data } = useQuery<MyQuiz[]>({
+    queryKey: ["my-quizzes"],
+    queryFn: async () => {
+      const response = await fetch(getApiUrl("/api/quizzes/my"));
+      if (!response.ok) {
+        throw new Error("Failed to fetch quizzes");
+      }
+      return response.json();
+    },
+  });
 
   const { mutate: createQuiz, isPending: isCreating } = useMutation({
     mutationFn: async () => {
-      const response = await fetch("/api/quizzes/my", {
+      const response = await fetch(getApiUrl("/api/quizzes/my"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +69,7 @@ function RouteComponent() {
 
   const { mutate: deleteQuiz, isPending: isDeleting } = useMutation({
     mutationFn: async (quizId: number) => {
-      const response = await fetch(`/api/quizzes/${quizId}`, {
+      const response = await fetch(getApiUrl(`/api/quizzes/${quizId}`), {
         method: "DELETE",
       });
 
@@ -87,7 +88,7 @@ function RouteComponent() {
 
   const { mutate: startGame, isPending: isStarting } = useMutation({
     mutationFn: async (quizId: number) => {
-      const res = await fetch("/api/games", {
+      const res = await fetch(getApiUrl("/api/games"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quizId }),
@@ -112,33 +113,33 @@ function RouteComponent() {
     }
   };
 
-	if (isPending) {
-		return (
-			<div className="flex items-center justify-center h-full flex-1">
-				<Loader2 className="animate-spin" />
-			</div>
-		);
-	}
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center h-full flex-1">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  }
 
-	if (isError) {
-		return (
-			<div className="flex items-center justify-center h-full flex-1">
-				<ErrorComponent />
-			</div>
-		);
-	}
-	return (
-		<>
-			<div className="flex justify-between items-center mb-8">
-				<h1 className="text-4xl font-bold tracking-tight">
-					Your quizzes
-				</h1>
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-full flex-1">
+        <ErrorComponent />
+      </div>
+    );
+  }
+  return (
+    <>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold tracking-tight">
+          Your quizzes
+        </h1>
 
-				<Button variant="outline" className="gap-2" onClick={() => createQuiz()} disabled={isCreating}>
-					<PlusCircle className="size-4" />
-					{isCreating ? "Creating..." : "Create a Quiz"}
-				</Button>
-			</div>
+        <Button variant="outline" className="gap-2" onClick={() => createQuiz()} disabled={isCreating}>
+          <PlusCircle className="size-4" />
+          {isCreating ? "Creating..." : "Create a Quiz"}
+        </Button>
+      </div>
       {data.length === 0 ? (
         <Empty className="border border-dashed">
           <EmptyHeader>
@@ -171,13 +172,13 @@ function RouteComponent() {
                       <span>{quiz.questions?.length || 0} question{quiz.questions?.length !== 1 ? 's' : ''}</span>
                     </div>
                     <div className="flex item-center gap-2 text-sm text-muted-foreground">
-                      <BarChart3 className="size-4"/>
+                      <BarChart3 className="size-4" />
                       <span>{quiz.timesPlayed ?? 0} play{(quiz.timesPlayed ?? 0) === 1 ? '' : 's'}</span>
                     </div>
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="pb-3 flex-1">
                 <div className="flex items-start gap-2 text-muted-foreground">
                   <FileText className="size-4 mt-0.5 shrink-0" />
@@ -186,19 +187,19 @@ function RouteComponent() {
                   </CardDescription>
                 </div>
               </CardContent>
-              
+
               <CardFooter className="pt-3 flex gap-2">
-                <Button 
-                  variant="default" 
-                  size="sm" 
+                <Button
+                  variant="default"
+                  size="sm"
                   className="flex-1 gap-2"
                   onClick={() => navigate({ to: `/my-quizzes/${quiz.id}` })}
                 >
                   <Edit className="size-4" />
                   Edit
                 </Button>
-                <Button 
-                  variant="secondary" 
+                <Button
+                  variant="secondary"
                   size="sm"
                   className="gap-2"
                   onClick={() => startGame(quiz.id)}
@@ -207,8 +208,8 @@ function RouteComponent() {
                   <Play className="size-4" />
                   {isStarting ? "Starting..." : "Start"}
                 </Button>
-                <Button 
-                  variant="destructive" 
+                <Button
+                  variant="destructive"
                   size="sm"
                   className="gap-2"
                   onClick={() => handleDeleteClick(quiz)}
@@ -229,7 +230,7 @@ function RouteComponent() {
               Delete Quiz
             </DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{quizToDelete?.title || "this quiz"}"? 
+              Are you sure you want to delete "{quizToDelete?.title || "this quiz"}"?
               This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
@@ -262,6 +263,6 @@ function RouteComponent() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-		</>
-	);
+    </>
+  );
 }

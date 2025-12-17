@@ -19,6 +19,7 @@ import {
   validateConfirmPassword,
   validateUsername,
 } from "@/lib/validation";
+import { getApiUrl } from "@/lib/api";
 
 interface EditProfileDialogProps {
   open: boolean;
@@ -116,7 +117,7 @@ export function EditProfileDialog({
 
     if (username !== user?.username) {
       try {
-        const response = await fetch("/api/users/username", {
+        const response = await fetch(getApiUrl("/api/users/username"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -140,7 +141,7 @@ export function EditProfileDialog({
 
     if (email !== user?.email) {
       try {
-        const response = await fetch("/api/users/email", {
+        const response = await fetch(getApiUrl("/api/users/email"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -164,7 +165,7 @@ export function EditProfileDialog({
 
     if (currentPassword && newPassword) {
       try {
-        const response = await fetch("/api/users/password", {
+        const response = awaitfetch(getApiUrl("/api/users/password", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -217,15 +218,15 @@ export function EditProfileDialog({
             passwordError ||
             confirmPasswordError ||
             serverError) && (
-            <AlertBox
-              isLogin={false}
-              emailError={emailError}
-              passwordError={passwordError}
-              confirmPasswordError={confirmPasswordError}
-              usernameError={usernameError}
-              serverError={serverError}
-            />
-          )}
+              <AlertBox
+                isLogin={false}
+                emailError={emailError}
+                passwordError={passwordError}
+                confirmPasswordError={confirmPasswordError}
+                usernameError={usernameError}
+                serverError={serverError}
+              />
+            )}
 
           {successMessage && (
             <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
