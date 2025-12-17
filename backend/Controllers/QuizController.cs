@@ -63,6 +63,21 @@ public class QuizController : ControllerBase
         return Ok(response);
     }
 
+    // Get quiz by ID without answers (public view)
+    [HttpGet("{id}/public")]
+    public async Task<IActionResult> GetByIdPublic(int id)
+    {
+        var quiz = await _quizService.GetQuizByIdAsync(id);
+        if (quiz == null)
+        {
+            return NotFound(new { message = "Quiz not found" });
+        }
+
+        var creator = await _userService.GetUserByIdAsync(quiz.CreatorID);
+        var response = MapToPublicResponse(quiz, creator?.Username ?? "Unknown");
+        return Ok(response);
+    }
+
     // Delete quiz by ID
     [Authorize]
     [HttpDelete("{id}")]
@@ -179,6 +194,25 @@ public class QuizController : ControllerBase
                 QuestionText: q.QuestionText,
                 Options: q.Options,
                 CorrectOptionIndex: q.CorrectOptionIndex,
+                TimeLimit: q.TimeLimit
+            )).ToList()
+        };
+    }
+
+    private static QuizPublicResponse MapToPublicResponse(Quiz quiz, string creatorUsername)
+    {
+        return new QuizPublicResponse
+        {
+            ID = quiz.ID,
+            CreatorID = quiz.CreatorID,
+            CreatorUsername = creatorUsername,
+            Title = quiz.Title,
+            Description = quiz.Description,
+            TimesPlayed = quiz.TimesPlayed,
+            Questions = quiz.Questions.Select(q => new QuizQuestionPublicDto(
+                Id: q.Id,
+                QuestionText: q.QuestionText,
+                Options: q.Options,
                 TimeLimit: q.TimeLimit
             )).ToList()
         };
