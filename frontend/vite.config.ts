@@ -22,12 +22,12 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/api": {
-				target: "http://localhost:5203",
+				target: process.env.VITE_API_URL || "http://localhost:5203",
 				changeOrigin: true,
 				secure: false,
 			},
 			"/hubs": {
-				target: "http://localhost:5203",
+				target: process.env.VITE_API_URL || "http://localhost:5203",
 				changeOrigin: true,
 				secure: false,
 				ws: true,
