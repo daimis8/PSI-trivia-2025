@@ -5,7 +5,6 @@ import { Loader2, PlusCircle, CircleQuestionMark, Edit, Trash2, FileText, ListCh
 import ErrorComponent from "@/components/Error";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { apiFetch } from "@/lib/api";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
   Card,
   CardContent,
@@ -23,7 +22,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { getApiUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/_app/my-quizzes/")({
   component: RouteComponent,
