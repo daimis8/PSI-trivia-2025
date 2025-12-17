@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AlertBox } from "@/components/AlertBox";
+import { apiFetch } from "@/lib/api";
 import { getApiUrl } from "@/lib/api";
 
 export const Route = createFileRoute("/play")({
@@ -76,7 +77,7 @@ function RouteComponent() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch(getApiUrl(`/api/games/${code}/exists`), { credentials: "include" });
+      const res = await apiFetch(`/api/games/${code}/exists`);
       if (!res.ok) {
         setCodeError("Invalid game code");
         return;

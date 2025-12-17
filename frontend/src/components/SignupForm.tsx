@@ -24,6 +24,7 @@ import {
   validateConfirmPassword,
   validateUsername,
 } from "@/lib/validation";
+import { apiFetch } from "@/lib/api";
 import { getApiUrl } from "@/lib/api";
 
 export function SignupForm() {
@@ -51,11 +52,10 @@ export function SignupForm() {
       password: string;
       username: string;
     }) => {
-      const response = await fetch(getApiUrl("/api/register"), {
+      const response = await apiFetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
-        credentials: "include",
       });
 
       if (!response.ok) {

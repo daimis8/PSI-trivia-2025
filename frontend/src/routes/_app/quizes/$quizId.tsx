@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Play, Loader2 } from "lucide-react";
-import { getApiUrl } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 
 export const Route = createFileRoute("/_app/quizes/$quizId")({
   component: QuizById,
@@ -46,7 +46,7 @@ function QuizById() {
   } = useQuery<Quiz>({
     queryKey: ["quiz-public", parsedId],
     queryFn: async () => {
-      const response = await fetch(getApiUrl(`/api/quizzes/${parsedId}/public`));
+      const response = await apiFetch(`/api/quizzes/${parsedId}/public`);
       if (!response.ok) {
         throw new Error("Failed to fetch quiz");
       }
@@ -57,11 +57,10 @@ function QuizById() {
 
   const { mutate: startGame, isPending: isStarting } = useMutation({
     mutationFn: async (quizId: number) => {
-      const res = await fetch(getApiUrl("/api/games"), {
+      const res = await apiFetch("/api/games", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quizId }),
-        credentials: "include",
       });
       if (!res.ok) {
         const error = await res.json();
